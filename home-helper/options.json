@@ -1,0 +1,9 @@
+{
+  "developerUid": 5342,
+  "nativeUid": 6268,
+  "sharedGid": 5000,
+  "target": "arm-linux-musleabi",
+  "sourceName": "LGE RCU",
+  "homeKey": 773,
+  "watchedApps": []
+}

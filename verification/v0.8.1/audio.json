@@ -1,0 +1,16 @@
+{
+  "version": "0.8.1",
+  "track": "Naruto Beautiful Music Mix",
+  "source": "user-provided Downloads MP3",
+  "bundledAsset": "app/assets/naruto-ambient.mp3",
+  "durationSeconds": 3256.137,
+  "bitrate": 128000,
+  "tvPlayback": true,
+  "physicalSpeakerConfirmation": "User confirmed music is audible",
+  "endOfTrackSeekTest": {
+    "looped": true,
+    "pausedDuringHandover": true,
+    "resumed": true
+  },
+  "originalUnchanged": true
+}

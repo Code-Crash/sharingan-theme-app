@@ -1,0 +1,28 @@
+node_modules/
+dist/
+.zig-cache/
+zig-out/
+__pycache__/
+*.pyc
+*.log
+*.ipk
+.DS_Store
+
+# Local credentials and device runtime state.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+.lgtv-key.json
+home-helper/app/state/
+home-helper/service/state/
+
+# Keep review reports; screenshots and device inventory remain local.
+verification/**/*.png
+verification/**/*.jpg
+verification/**/*.jpeg
+verification/**/*.webp
+verification/installed-apps.json
+verification/tv-state.json
+verification/**/helper-*.txt

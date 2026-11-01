@@ -1,0 +1,61 @@
+import {writeFile,mkdir} from 'node:fs/promises';
+const base=process.argv[2]||'http://127.0.0.1:43037',dir=process.argv[3]||'verification/v0.8';await mkdir(dir,{recursive:true});
+const target=(await(await fetch(base+'/json/list')).json()).find(t=>t.description==='com.dextor.sharingan');if(!target)throw Error('Dashboard must be open');
+const ws=new WebSocket(target.webSocketDebuggerUrl);await new Promise((r,j)=>{ws.onopen=r;ws.onerror=j});
+let serial=0;const pending=new Map(),errors=[];ws.onmessage=e=>{const m=JSON.parse(e.data);if(m.method==='Runtime.exceptionThrown')errors.push(m.params.exceptionDetails);const p=pending.get(m.id);if(p){clearTimeout(p.timer);pending.delete(m.id);m.error?p.reject(Error(JSON.stringify(m.error))):p.resolve(m.result)}};
+function call(method,params={}){return new Promise((resolve,reject)=>{const id=++serial,timer=setTimeout(()=>{pending.delete(id);reject(Error(method+' timeout'))},15000);pending.set(id,{resolve,reject,timer});ws.send(JSON.stringify({id,method,params}));})}
+async function evaluate(expression){const r=await call('Runtime.evaluate',{expression,returnByValue:true,awaitPromise:true});if(r.exceptionDetails)throw Error(JSON.stringify(r.exceptionDetails));return r.result.value;}
+const delay=ms=>new Promise(r=>setTimeout(r,ms));
+async function key(code){await evaluate(`document.dispatchEvent(new KeyboardEvent('keydown',{keyCode:${code},which:${code},bubbles:true,cancelable:true}));true;`)}
+async function shot(name){if(process.env.REVIEW_SCREENSHOTS==='0')return;const r=await call('Page.captureScreenshot',{format:'png'});await writeFile(dir+'/'+name+'.png',Buffer.from(r.data,'base64'));}
+function check(value,message){if(!value)throw Error(message)}
+const report={version:'0.8.1',checks:{},runtimeErrors:errors};let saved;
+try{
+ await call('Runtime.enable');saved=await evaluate('JSON.parse(JSON.stringify(options))');
+ await evaluate(`(()=>{options.autoTheme=false;if(!appPanel.hidden)closeApps();if(!themePanel.hidden)closeThemes();if(!panel.hidden)closePanel();busy=false;applyOptions();select(0,true);return true;})()`);
+ report.checks.collection=await evaluate(`({defaults:DEFAULT_APP_IDS,apps:APPS.map(a=>a.id),catalog:CATALOG.length,themes:THEMES.map(t=>t.id),loaded:Array.from(document.images).every(i=>i.complete&&i.naturalWidth>0)})`);
+ check(report.checks.collection.themes.length===6&&report.checks.collection.loaded,'Six themes/assets');
+ await key(39);check(await evaluate('selected===1'),'Right did not select next app');await key(37);check(await evaluate('selected===0'),'Left did not select previous app');
+ await key(40);check(await evaluate(`document.activeElement.id==='themes-button'`),'Down footer');await key(39);check(await evaluate(`document.activeElement.id==='lg-home'`),'Footer LG Home');await key(39);check(await evaluate(`document.activeElement.id==='settings'`),'Footer Settings');await key(37);check(await evaluate(`document.activeElement.id==='lg-home'`),'Footer Left');await key(38);check(await evaluate(`document.activeElement===buttons[selected]`),'Up app row');
+ report.checks.navigation={leftRight:true,footerBothDirections:true};
+ await evaluate('openPanel()');await key(39);check(await evaluate('!themePanel.hidden'),'Settings Right must open themes');await key(461);check(await evaluate('themePanel.hidden&&!panel.hidden'),'Back must return to Settings');await key(37);check(await evaluate('panel.hidden'),'Settings Left must return to apps');
+ await evaluate('openPanel()');await key(40);check(await evaluate(`document.activeElement.dataset.setting==='apps'`),'Settings Down');await key(13);check(await evaluate('!appPanel.hidden'),'App checklist open');
+ const originalIds=await evaluate('[...options.appIds]');const extra=await evaluate(`CATALOG.find(a=>!options.appIds.includes(a.id))?.id`);
+ if(extra){await evaluate(`toggleApp(${JSON.stringify(extra)});true`);check(await evaluate(`APPS.some(a=>a.id===${JSON.stringify(extra)})`),'App enable');await evaluate(`toggleApp(${JSON.stringify(extra)});true`);}
+ check(JSON.stringify(await evaluate('options.appIds'))===JSON.stringify(originalIds),'App checklist restore');
+ await evaluate(`options.appIds=[CATALOG[0].id];renderApps();toggleApp(CATALOG[0].id);true`);check(await evaluate('options.appIds.length===1'),'Last app must remain');
+ await evaluate(`options.appIds=CATALOG.map(a=>a.id);renderApps();select(APPS.length-1,true);true`);report.checks.carousel=await evaluate(`(()=>{const r=buttons[selected].getBoundingClientRect(),row=document.getElementById('apps');return {count:APPS.length,scroll:row.scrollLeft,visible:r.left>=row.getBoundingClientRect().left-1&&r.right<=row.getBoundingClientRect().right+1};})()`);check(report.checks.carousel.scroll>0&&report.checks.carousel.visible,'Long app row scroll');
+ await evaluate(`options.appIds=${JSON.stringify(originalIds)};renderApps();closeApps();closePanel();select(0,true);true`);
+ report.checks.apps={checkbox:true,lastAppGuard:true,restored:true};
+ report.checks.eyes={};
+ for(const theme of report.checks.collection.themes){
+  await evaluate(`setTheme('${theme}');select(0,true);true`);await delay(650);
+  const selector=(theme==='rain'?'#eyes':'#'+theme+'-stage .character-eyes')+' .gaze';
+  const left=await evaluate(`Array.from(document.querySelectorAll('${selector}')).map(e=>e.style.transform)`);
+  await evaluate('select(APPS.length-1,true)');await delay(650);const right=await evaluate(`Array.from(document.querySelectorAll('${selector}')).map(e=>e.style.transform)`);
+  check(left.length===2&&JSON.stringify(left)!==JSON.stringify(right),'Eye tracking '+theme);report.checks.eyes[theme]={passed:true};await shot('theme-'+theme);
+ }
+ report.checks.staticItachi=await evaluate(`(()=>{setTheme('red');select(0,true);const e=document.getElementById('itachi-static'),a=JSON.stringify(e.getBoundingClientRect());select(APPS.length-1,true);return {sameBounds:a===JSON.stringify(e.getBoundingClientRect()),transform:getComputedStyle(e).transform,animations:e.getAnimations().length};})()`);check(report.checks.staticItachi.sameBounds&&report.checks.staticItachi.transform==='none'&&report.checks.staticItachi.animations===0,'Itachi pose moved');
+ report.checks.crows=await evaluate(`({count:document.getElementById('crow-flight').children.length,width:parseFloat(getComputedStyle(document.querySelector('.flying-crow')).width)})`);check(report.checks.crows.count===7&&report.checks.crows.width>=110,'Crow sizing');
+ await delay(1700);check(await evaluate(`document.getElementById('crow-flight').children.length===0`),'Crow cleanup');
+ await evaluate(`setTheme('hinata');true`);const t1=await evaluate(`document.getElementById('hinata-water').getCurrentTime()`);await delay(1100);const t2=await evaluate(`document.getElementById('hinata-water').getCurrentTime()`);check(t2>t1,'Water not moving');
+ await evaluate('syncDashboardVisibility(false)');check(await evaluate(`document.getElementById('hinata-water').animationsPaused()&&scene.classList.contains('backgrounded')`),'Hidden animations not paused');await evaluate('syncDashboardVisibility(true)');check(await evaluate(`!document.getElementById('hinata-water').animationsPaused()`),'Visible water not resumed');
+ await evaluate('options.motion=false;applyOptions();true');check(await evaluate(`document.getElementById('hinata-water').animationsPaused()`),'Motion off');await evaluate('options.motion=true;applyOptions();true');report.checks.water={moving:true,hiddenPause:true,returnResume:true,motionSwitch:true};
+ report.checks.powers={};for(const theme of ['naruto','hinata','sasuke','sakura']){await evaluate(`setTheme('${theme}');select(2,true);clearPowerLayer();window.reviewFlight=sendPower(2,true);true`);await delay(250);await shot('power-'+theme);await evaluate('window.reviewFlight');check(await evaluate(`document.getElementById('selection-power').children.length===0`),'Power cleanup '+theme);report.checks.powers[theme]=true;}
+ await evaluate(`setTheme('naruto');window.reviewRasengan=playRasengan(0);true`);await delay(350);await shot('rasengan');await evaluate('window.reviewRasengan');check(await evaluate(`document.getElementById('rasengan-projectile').hidden&&document.getElementById('rasengan-impact').hidden`),'Rasengan cleanup');report.checks.rasengan=true;
+ await evaluate('openThemes()');check(await evaluate(`themeCards.every(c=>{const r=c.getBoundingClientRect();return r.top>=0&&r.bottom<=innerHeight})`),'Theme gallery overflow');await shot('themes');await evaluate('closeThemes();openPanel();true');
+ report.checks.settings=await evaluate(`({count:panelButtons.length,labels:panelButtons.map(b=>b.dataset.setting),visible:panelButtons.every(b=>b.getBoundingClientRect().bottom<=innerHeight),hint:document.getElementById('hint').textContent})`);check(report.checks.settings.count===8&&report.checks.settings.visible&&!report.checks.settings.labels.some(s=>/Trial|Resume|Pause|useAsHome/.test(s)),'Settings controls');await shot('settings');await evaluate('closePanel()');
+ report.checks.soundtrack=await evaluate(`({state:ambient.state,source:window.DASHBOARD_MUSIC.src,loop:ambient.media?.loop,error:ambient.media?.error?.code})`);check(report.checks.soundtrack.source==='assets/naruto-ambient.mp3'&&report.checks.soundtrack.loop===true&&!report.checks.soundtrack.error,'Bundled music must loop without a media error');
+ report.checks.screenSaver=await evaluate(`({state:screenSaver.state,enabled:options.keepVisible})`);check(report.checks.screenSaver.state==='registered'&&report.checks.screenSaver.enabled,'Screensaver registration');
+ const introBefore=await evaluate(`diagnostics.filter(e=>e.event==='intro-shown').length`);
+ await evaluate(`document.dispatchEvent(new Event('webOSRelaunch'));document.dispatchEvent(new Event('visibilitychange'));intro();true`);
+ const introAfter=await evaluate(`diagnostics.filter(e=>e.event==='intro-shown').length`);
+ check(introAfter===introBefore,'Loader replayed on foreground/relaunch');report.checks.intro={before:introBefore,after:introAfter,noReplay:true};
+ report.checks.homeNote=await evaluate(`({text:document.getElementById('home-note').textContent,settingPresent:!!document.querySelector('[data-setting="useAsHome"]')})`);check(!report.checks.homeNote.settingPresent,'Home toggle should be removed');
+ report.checks.memory=await evaluate(`({jsHeap:performance.memory?.usedJSHeapSize,dom:document.getElementsByTagName('*').length,temporaryPowers:document.getElementById('selection-power').children.length})`);
+ check(errors.length===0,'Runtime exceptions');report.passed=true;console.log('Deep TV review passed: navigation, panels, checklist, carousel, six themes, eyes, static pose, crows, water, powers, Settings, bundled looping music, screensaver registration.');
+}catch(e){report.passed=false;report.error=e.message;console.error(e);process.exitCode=1;}
+finally{
+ if(saved){try{await evaluate(`(()=>{Object.assign(options,${JSON.stringify(saved)});renderApps();if(!appPanel.hidden)closeApps();if(!themePanel.hidden)closeThemes();if(!panel.hidden)closePanel();syncDashboardVisibility(true);applyOptions();lastThemeChange=Date.now();select(0,true);return true;})()`)}catch(e){report.restoreError=e.message;}}
+ await writeFile(dir+'/review.json',JSON.stringify(report,null,2));ws.close();setTimeout(()=>process.exit(process.exitCode||0),200);
+}

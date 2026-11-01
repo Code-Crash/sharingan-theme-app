@@ -1,0 +1,127 @@
+{
+  "version": "0.8.1",
+  "checks": {
+    "collection": {
+      "defaults": [
+        "youtube.leanback.v4",
+        "netflix",
+        "amazon",
+        "hotstar",
+        "com.crunchyroll.webapp"
+      ],
+      "apps": [
+        "youtube.leanback.v4",
+        "netflix",
+        "amazon",
+        "hotstar",
+        "com.crunchyroll.webapp"
+      ],
+      "catalog": 17,
+      "themes": [
+        "rain",
+        "red",
+        "naruto",
+        "hinata",
+        "sasuke",
+        "sakura"
+      ],
+      "loaded": true
+    },
+    "navigation": {
+      "leftRight": true,
+      "footerBothDirections": true
+    },
+    "carousel": {
+      "count": 17,
+      "scroll": 2887,
+      "visible": true
+    },
+    "apps": {
+      "checkbox": true,
+      "lastAppGuard": true,
+      "restored": true
+    },
+    "eyes": {
+      "rain": {
+        "passed": true
+      },
+      "red": {
+        "passed": true
+      },
+      "naruto": {
+        "passed": true
+      },
+      "hinata": {
+        "passed": true
+      },
+      "sasuke": {
+        "passed": true
+      },
+      "sakura": {
+        "passed": true
+      }
+    },
+    "staticItachi": {
+      "sameBounds": true,
+      "transform": "none",
+      "animations": 0
+    },
+    "crows": {
+      "count": 7,
+      "width": 119.031
+    },
+    "water": {
+      "moving": true,
+      "hiddenPause": true,
+      "returnResume": true,
+      "motionSwitch": true
+    },
+    "powers": {
+      "naruto": true,
+      "hinata": true,
+      "sasuke": true,
+      "sakura": true
+    },
+    "rasengan": true,
+    "settings": {
+      "count": 8,
+      "labels": [
+        "themes",
+        "apps",
+        "ambientMusic",
+        "musicVolume",
+        "rotationMode",
+        "motion",
+        "hour12",
+        "close"
+      ],
+      "visible": true,
+      "hint": "↑ ↓ Choose setting · → / OK Change · ← / Back Close"
+    },
+    "soundtrack": {
+      "state": "playing",
+      "source": "assets/naruto-ambient.mp3",
+      "loop": true
+    },
+    "screenSaver": {
+      "state": "registered",
+      "enabled": true
+    },
+    "intro": {
+      "before": 0,
+      "after": 0,
+      "noReplay": true
+    },
+    "homeNote": {
+      "text": "Home: Sharingan · Hold Home: LG Home",
+      "settingPresent": false
+    },
+    "memory": {
+      "jsHeap": 10000000,
+      "dom": 660,
+      "temporaryPowers": 0
+    }
+  },
+  "runtimeErrors": [],
+  "passed": true
+}

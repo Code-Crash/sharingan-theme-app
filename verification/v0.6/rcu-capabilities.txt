@@ -1,0 +1,6 @@
+[Info] Set target device : lg-tv
+readOnlyProbe source=1 destination=1 grabbed=0 written=0
+type=0 sourceResult=4 destResult=4 differingBytes=1 sourceNonzeroBytes=1 sourceFirst=7 destFirst=3
+type=1 sourceResult=160 destResult=160 differingBytes=0 sourceNonzeroBytes=160 sourceFirst=254 destFirst=254
+type=2 sourceResult=4 destResult=4 differingBytes=0 sourceNonzeroBytes=0 sourceFirst=0 destFirst=0
+type=3 sourceResult=8 destResult=8 differingBytes=0 sourceNonzeroBytes=0 sourceFirst=0 destFirst=0

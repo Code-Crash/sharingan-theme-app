@@ -1,0 +1,52 @@
+{
+  "date": "2026-11-02",
+  "tv": "LG 55NU870BPLA",
+  "firmware": "43.21.87",
+  "mode": "Developer Mode / prisoner",
+  "checks": {
+    "zoomControl": {
+      "endpoint": "com.webos.surfacemanager/controlZoom",
+      "result": "Denied method call",
+      "permissionGroup": "launcher.control"
+    },
+    "defaultHome": {
+      "endpoint": "com.webos.applicationManager/setDefaultApp",
+      "result": "Denied method call"
+    },
+    "settingsRead": {
+      "categories": [
+        "general",
+        "option",
+        "accessibility"
+      ],
+      "result": "Access denied"
+    },
+    "persistentBootActivity": {
+      "fromDashboard": "create denied",
+      "fromDeveloperCLI": "errorCode 13: creator does not have rights to callback/trigger",
+      "activityCreated": false
+    },
+    "appZoomOptOut": {
+      "publicAppinfoDocumentation": "No Zoom or magnification opt-out documented",
+      "tvCodeEvidence": {
+        "binary": "/usr/lib/libappLaunch.so",
+        "symbols": [
+          "cb_getScreenZoomBlockAppList"
+        ],
+        "request": {
+          "serviceName": "service_setting_secure",
+          "url": "getConfig",
+          "requester": "screen_zoom"
+        }
+      },
+      "interpretation": "LG-managed exclusion list is a plausible explanation for other apps rejecting Zoom; this is not evidence of a self-declared app opt-out."
+    }
+  },
+  "systemChangesMade": false,
+  "persistentActivitiesCreated": false,
+  "unresolved": [
+    "Disable Zoom while Sharingan is active",
+    "Eliminate LG Home flash",
+    "Launch Sharingan automatically on every power-on"
+  ]
+}

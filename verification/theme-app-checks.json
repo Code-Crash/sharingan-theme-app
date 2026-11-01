@@ -1,0 +1,15 @@
+{
+  "catalogCount": 17,
+  "eyeLeft": [
+    "translate(-13.86px, 7.53px)",
+    "translate(-15.33px, 5.62px)"
+  ],
+  "eyeRight": [
+    "translate(12.05px, 9.17px)",
+    "translate(5.4px, 12.33px)"
+  ],
+  "checkboxPassed": true,
+  "crossThemePassed": true,
+  "persistencePassed": true,
+  "carouselPassed": true
+}

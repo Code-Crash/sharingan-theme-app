@@ -1,0 +1,22 @@
+{
+  "before": {
+    "theme": "red",
+    "appIds": [
+      "youtube.leanback.v4",
+      "netflix",
+      "amazon",
+      "com.webos.app.browser"
+    ]
+  },
+  "after": {
+    "theme": "red",
+    "appIds": [
+      "youtube.leanback.v4",
+      "netflix",
+      "amazon",
+      "com.webos.app.browser"
+    ],
+    "allLoaded": true
+  },
+  "passed": true
+}

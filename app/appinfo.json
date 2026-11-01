@@ -1,0 +1,17 @@
+{
+  "id": "com.dextor.sharingan",
+  "version": "0.8.1",
+  "vendor": "Dextor",
+  "type": "web",
+  "main": "index.html",
+  "title": "Sharingan",
+  "icon": "assets/icon.png",
+  "largeIcon": "assets/icon-large.png",
+  "resolution": "1920x1080",
+  "disableBackHistoryAPI": true,
+  "bgColor": "#030810",
+  "requiredACG": [
+    "application.launcher",
+    "application.query"
+  ]
+}

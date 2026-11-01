@@ -1,0 +1,1 @@
+{"id":"com.dextor.sharingan.helper","description":"Optional community Home helper controls","services":[{"name":"com.dextor.sharingan.helper","commands":[{"name":"status","public":false},{"name":"pause","public":false},{"name":"resume","public":false},{"name":"ensure","public":false}]}],"requiredACG":["application.launcher"]}

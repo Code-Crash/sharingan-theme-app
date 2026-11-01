@@ -1,0 +1,508 @@
+[
+  {
+    "elapsed": 0
+  },
+  {
+    "elapsed": 15.55,
+    "state": {
+      "time": 1793561724608,
+      "hidden": false,
+      "theme": "red",
+      "auto": true,
+      "interval": 60,
+      "screenSaver": "registered",
+      "keys": 0,
+      "events": [
+        {
+          "time": "2026-11-01T19:35:17.194Z",
+          "event": "screensaver-registering"
+        },
+        {
+          "time": "2026-11-01T19:35:17.339Z",
+          "event": "screensaver-registered"
+        }
+      ]
+    }
+  },
+  {
+    "elapsed": 30.875,
+    "state": {
+      "time": 1793561739931,
+      "hidden": false,
+      "theme": "red",
+      "auto": true,
+      "interval": 60,
+      "screenSaver": "registered",
+      "keys": 0,
+      "events": [
+        {
+          "time": "2026-11-01T19:35:17.194Z",
+          "event": "screensaver-registering"
+        },
+        {
+          "time": "2026-11-01T19:35:17.339Z",
+          "event": "screensaver-registered"
+        }
+      ]
+    }
+  },
+  {
+    "elapsed": 46.156,
+    "state": {
+      "time": 1793561755216,
+      "hidden": false,
+      "theme": "red",
+      "auto": true,
+      "interval": 60,
+      "screenSaver": "registered",
+      "keys": 0,
+      "events": [
+        {
+          "time": "2026-11-01T19:35:17.194Z",
+          "event": "screensaver-registering"
+        },
+        {
+          "time": "2026-11-01T19:35:17.339Z",
+          "event": "screensaver-registered"
+        }
+      ]
+    }
+  },
+  {
+    "elapsed": 61.439,
+    "state": {
+      "time": 1793561770667,
+      "hidden": false,
+      "theme": "red",
+      "auto": true,
+      "interval": 60,
+      "screenSaver": "registered",
+      "keys": 0,
+      "events": [
+        {
+          "time": "2026-11-01T19:35:17.194Z",
+          "event": "screensaver-registering"
+        },
+        {
+          "time": "2026-11-01T19:35:17.339Z",
+          "event": "screensaver-registered"
+        }
+      ]
+    }
+  },
+  {
+    "elapsed": 76.943,
+    "state": {
+      "time": 1793561786756,
+      "hidden": false,
+      "theme": "naruto",
+      "auto": true,
+      "interval": 60,
+      "screenSaver": "registered",
+      "keys": 0,
+      "events": [
+        {
+          "time": "2026-11-01T19:35:17.194Z",
+          "event": "screensaver-registering"
+        },
+        {
+          "time": "2026-11-01T19:35:17.339Z",
+          "event": "screensaver-registered"
+        },
+        {
+          "time": "2026-11-01T19:36:18.517Z",
+          "event": "theme-changed",
+          "data": "naruto"
+        }
+      ]
+    }
+  },
+  {
+    "elapsed": 93.029,
+    "state": {
+      "time": 1793561802221,
+      "hidden": false,
+      "theme": "naruto",
+      "auto": true,
+      "interval": 30,
+      "screenSaver": "registered",
+      "keys": 0,
+      "events": [
+        {
+          "time": "2026-11-01T19:35:17.194Z",
+          "event": "screensaver-registering"
+        },
+        {
+          "time": "2026-11-01T19:35:17.339Z",
+          "event": "screensaver-registered"
+        },
+        {
+          "time": "2026-11-01T19:36:18.517Z",
+          "event": "theme-changed",
+          "data": "naruto"
+        }
+      ]
+    }
+  },
+  {
+    "elapsed": 108.453,
+    "state": {
+      "time": 1793561817511,
+      "hidden": false,
+      "theme": "naruto",
+      "auto": true,
+      "interval": 30,
+      "screenSaver": "registered",
+      "keys": 0,
+      "events": [
+        {
+          "time": "2026-11-01T19:35:17.194Z",
+          "event": "screensaver-registering"
+        },
+        {
+          "time": "2026-11-01T19:35:17.339Z",
+          "event": "screensaver-registered"
+        },
+        {
+          "time": "2026-11-01T19:36:18.517Z",
+          "event": "theme-changed",
+          "data": "naruto"
+        }
+      ]
+    }
+  },
+  {
+    "elapsed": 123.74,
+    "state": {
+      "time": 1793561832798,
+      "hidden": false,
+      "theme": "naruto",
+      "auto": true,
+      "interval": 30,
+      "screenSaver": "registered",
+      "keys": 0,
+      "events": [
+        {
+          "time": "2026-11-01T19:35:17.194Z",
+          "event": "screensaver-registering"
+        },
+        {
+          "time": "2026-11-01T19:35:17.339Z",
+          "event": "screensaver-registered"
+        },
+        {
+          "time": "2026-11-01T19:36:18.517Z",
+          "event": "theme-changed",
+          "data": "naruto"
+        }
+      ]
+    }
+  },
+  {
+    "elapsed": 139.025,
+    "state": {
+      "time": 1793561848120,
+      "hidden": false,
+      "theme": "hinata",
+      "auto": true,
+      "interval": 60,
+      "screenSaver": "registered",
+      "keys": 0,
+      "events": [
+        {
+          "time": "2026-11-01T19:35:17.194Z",
+          "event": "screensaver-registering"
+        },
+        {
+          "time": "2026-11-01T19:35:17.339Z",
+          "event": "screensaver-registered"
+        },
+        {
+          "time": "2026-11-01T19:36:18.517Z",
+          "event": "theme-changed",
+          "data": "naruto"
+        },
+        {
+          "time": "2026-11-01T19:37:13.316Z",
+          "event": "theme-changed",
+          "data": "hinata"
+        }
+      ]
+    }
+  },
+  {
+    "elapsed": 154.366,
+    "state": {
+      "time": 1793561863436,
+      "hidden": false,
+      "theme": "hinata",
+      "auto": true,
+      "interval": 60,
+      "screenSaver": "registered",
+      "keys": 0,
+      "events": [
+        {
+          "time": "2026-11-01T19:35:17.194Z",
+          "event": "screensaver-registering"
+        },
+        {
+          "time": "2026-11-01T19:35:17.339Z",
+          "event": "screensaver-registered"
+        },
+        {
+          "time": "2026-11-01T19:36:18.517Z",
+          "event": "theme-changed",
+          "data": "naruto"
+        },
+        {
+          "time": "2026-11-01T19:37:13.316Z",
+          "event": "theme-changed",
+          "data": "hinata"
+        }
+      ]
+    }
+  },
+  {
+    "elapsed": 169.666,
+    "state": {
+      "time": 1793561878720,
+      "hidden": false,
+      "theme": "hinata",
+      "auto": true,
+      "interval": 60,
+      "screenSaver": "registered",
+      "keys": 0,
+      "events": [
+        {
+          "time": "2026-11-01T19:35:17.194Z",
+          "event": "screensaver-registering"
+        },
+        {
+          "time": "2026-11-01T19:35:17.339Z",
+          "event": "screensaver-registered"
+        },
+        {
+          "time": "2026-11-01T19:36:18.517Z",
+          "event": "theme-changed",
+          "data": "naruto"
+        },
+        {
+          "time": "2026-11-01T19:37:13.316Z",
+          "event": "theme-changed",
+          "data": "hinata"
+        }
+      ]
+    }
+  },
+  {
+    "elapsed": 184.963,
+    "state": {
+      "time": 1793561894015,
+      "hidden": false,
+      "theme": "hinata",
+      "auto": true,
+      "interval": 60,
+      "screenSaver": "registered",
+      "keys": 0,
+      "events": [
+        {
+          "time": "2026-11-01T19:35:17.194Z",
+          "event": "screensaver-registering"
+        },
+        {
+          "time": "2026-11-01T19:35:17.339Z",
+          "event": "screensaver-registered"
+        },
+        {
+          "time": "2026-11-01T19:36:18.517Z",
+          "event": "theme-changed",
+          "data": "naruto"
+        },
+        {
+          "time": "2026-11-01T19:37:13.316Z",
+          "event": "theme-changed",
+          "data": "hinata"
+        },
+        {
+          "time": "2026-11-01T19:38:09.902Z",
+          "event": "screensaver-request",
+          "data": {
+            "timestamp": "726458681"
+          }
+        },
+        {
+          "time": "2026-11-01T19:38:10.267Z",
+          "event": "screensaver-response",
+          "data": {
+            "timestamp": "726458681",
+            "result": {
+              "returnValue": true
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "elapsed": 200.246,
+    "state": {
+      "time": 1793561910018,
+      "hidden": false,
+      "theme": "sasuke",
+      "auto": true,
+      "interval": 60,
+      "screenSaver": "registered",
+      "keys": 0,
+      "events": [
+        {
+          "time": "2026-11-01T19:35:17.194Z",
+          "event": "screensaver-registering"
+        },
+        {
+          "time": "2026-11-01T19:35:17.339Z",
+          "event": "screensaver-registered"
+        },
+        {
+          "time": "2026-11-01T19:36:18.517Z",
+          "event": "theme-changed",
+          "data": "naruto"
+        },
+        {
+          "time": "2026-11-01T19:37:13.316Z",
+          "event": "theme-changed",
+          "data": "hinata"
+        },
+        {
+          "time": "2026-11-01T19:38:09.902Z",
+          "event": "screensaver-request",
+          "data": {
+            "timestamp": "726458681"
+          }
+        },
+        {
+          "time": "2026-11-01T19:38:10.267Z",
+          "event": "screensaver-response",
+          "data": {
+            "timestamp": "726458681",
+            "result": {
+              "returnValue": true
+            }
+          }
+        },
+        {
+          "time": "2026-11-01T19:38:28.507Z",
+          "event": "theme-changed",
+          "data": "sasuke"
+        }
+      ]
+    }
+  },
+  {
+    "elapsed": 216.255,
+    "state": {
+      "time": 1793561925306,
+      "hidden": false,
+      "theme": "sasuke",
+      "auto": true,
+      "interval": 60,
+      "screenSaver": "registered",
+      "keys": 0,
+      "events": [
+        {
+          "time": "2026-11-01T19:35:17.194Z",
+          "event": "screensaver-registering"
+        },
+        {
+          "time": "2026-11-01T19:35:17.339Z",
+          "event": "screensaver-registered"
+        },
+        {
+          "time": "2026-11-01T19:36:18.517Z",
+          "event": "theme-changed",
+          "data": "naruto"
+        },
+        {
+          "time": "2026-11-01T19:37:13.316Z",
+          "event": "theme-changed",
+          "data": "hinata"
+        },
+        {
+          "time": "2026-11-01T19:38:09.902Z",
+          "event": "screensaver-request",
+          "data": {
+            "timestamp": "726458681"
+          }
+        },
+        {
+          "time": "2026-11-01T19:38:10.267Z",
+          "event": "screensaver-response",
+          "data": {
+            "timestamp": "726458681",
+            "result": {
+              "returnValue": true
+            }
+          }
+        },
+        {
+          "time": "2026-11-01T19:38:28.507Z",
+          "event": "theme-changed",
+          "data": "sasuke"
+        }
+      ]
+    }
+  },
+  {
+    "elapsed": 231.536,
+    "state": {
+      "time": 1793561940582,
+      "hidden": false,
+      "theme": "sasuke",
+      "auto": true,
+      "interval": 60,
+      "screenSaver": "registered",
+      "keys": 0,
+      "events": [
+        {
+          "time": "2026-11-01T19:35:17.194Z",
+          "event": "screensaver-registering"
+        },
+        {
+          "time": "2026-11-01T19:35:17.339Z",
+          "event": "screensaver-registered"
+        },
+        {
+          "time": "2026-11-01T19:36:18.517Z",
+          "event": "theme-changed",
+          "data": "naruto"
+        },
+        {
+          "time": "2026-11-01T19:37:13.316Z",
+          "event": "theme-changed",
+          "data": "hinata"
+        },
+        {
+          "time": "2026-11-01T19:38:09.902Z",
+          "event": "screensaver-request",
+          "data": {
+            "timestamp": "726458681"
+          }
+        },
+        {
+          "time": "2026-11-01T19:38:10.267Z",
+          "event": "screensaver-response",
+          "data": {
+            "timestamp": "726458681",
+            "result": {
+              "returnValue": true
+            }
+          }
+        },
+        {
+          "time": "2026-11-01T19:38:28.507Z",
+          "event": "theme-changed",
+          "data": "sasuke"
+        }
+      ]
+    }
+  }
+]

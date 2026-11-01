@@ -1,0 +1,69 @@
+{
+  "version": "0.8.0",
+  "checks": {
+    "collection": {
+      "defaults": [
+        "youtube.leanback.v4",
+        "netflix",
+        "amazon",
+        "hotstar",
+        "com.crunchyroll.webapp"
+      ],
+      "apps": [
+        "youtube.leanback.v4",
+        "netflix",
+        "amazon",
+        "hotstar",
+        "com.crunchyroll.webapp"
+      ],
+      "catalog": 17,
+      "themes": [
+        "rain",
+        "red",
+        "naruto",
+        "hinata",
+        "sasuke",
+        "sakura"
+      ],
+      "loaded": true
+    },
+    "navigation": {
+      "leftRight": true,
+      "footerBothDirections": true
+    },
+    "carousel": {
+      "count": 17,
+      "scroll": 2887,
+      "visible": true
+    },
+    "apps": {
+      "checkbox": true,
+      "lastAppGuard": true,
+      "restored": true
+    },
+    "eyes": {
+      "rain": {
+        "passed": true
+      },
+      "red": {
+        "passed": true
+      },
+      "naruto": {
+        "passed": true
+      },
+      "hinata": {
+        "passed": true
+      },
+      "sasuke": {
+        "passed": true
+      },
+      "sakura": {
+        "passed": true
+      }
+    }
+  },
+  "runtimeErrors": [],
+  "passed": false,
+  "error": "Page.captureScreenshot timeout",
+  "restoreError": "Runtime.evaluate timeout"
+}

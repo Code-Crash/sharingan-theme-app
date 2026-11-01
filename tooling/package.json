@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "simple-icons": "^16.36.0",
+    "ws": "8.22.1"
+  }
+}

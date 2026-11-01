@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Sharingan</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main id="scene">
+    <div id="artwork">
+      <div id="red-stage" aria-hidden="true">
+        <img class="red-backdrop" src="assets/red-background.png" alt="">
+        <img id="red-moon" class="red-backdrop" src="assets/red-background.png" alt="">
+        <img id="itachi-static" src="assets/itachi-jutsu.png" alt="">
+      </div>
+      <div id="naruto-stage" aria-hidden="true"><img src="assets/naruto-eyes-base.png" alt=""><div class="moving-sky"></div><div class="chakra-halo"></div><div id="rasengan"><span></span><span></span><span></span></div><div id="chakra-particles"></div></div>
+      <div id="hinata-stage" aria-hidden="true"><img src="assets/hinata-moon.png" alt=""><svg id="hinata-water" viewBox="0 0 1672 941" preserveAspectRatio="none"><defs><filter id="lake-ripples" filterUnits="userSpaceOnUse" x="240" y="420" width="800" height="240"><feTurbulence type="fractalNoise" baseFrequency=".008 .065" numOctaves="1" seed="7" result="water-noise"/><feOffset in="water-noise" result="water-drift"><animate attributeName="dx" values="0;22;0" dur="24s" repeatCount="indefinite"/><animate attributeName="dy" values="0;5;0" dur="19s" repeatCount="indefinite"/></feOffset><feDisplacementMap in="SourceGraphic" in2="water-drift" scale="6" xChannelSelector="R" yChannelSelector="G"/></filter><clipPath id="lake-region"><path d="M280 442 Q630 443 1007 443 L918 592 Q665 654 281 608Z"/></clipPath></defs><g clip-path="url(#lake-region)"><image href="assets/hinata-moon.png" width="1672" height="941" filter="url(#lake-ripples)"/></g></svg><div class="moon-aura"></div><div class="moon-mist mist-back"></div><div class="moon-mist mist-front"></div><div id="hinata-fireflies"></div></div>
+      <div id="sasuke-stage" aria-hidden="true"><img src="assets/sasuke-storm.png" alt=""><div class="storm-energy"></div><div id="chidori"><span></span><span></span><span></span></div><div class="storm-lightning"></div></div>
+      <div id="sakura-stage" aria-hidden="true"><img src="assets/sakura-blossom.png" alt=""><div id="sakura-petals"></div><div class="healing-aura"></div></div>
+      <img class="wallpaper" src="assets/itachi-rain.png" alt="Itachi in a moonlit forest">
+      <svg id="eyes" viewBox="0 0 1672 941" preserveAspectRatio="none" aria-hidden="true">
+        <defs>
+          <path id="eye-left" d="M870 302 Q907 288 942 313 Q960 323 970 337 Q932 350 893 337 Q877 328 870 302Z"/>
+          <path id="eye-right" d="M1150 333 Q1178 299 1215 297 L1257 299 Q1260 324 1236 337 Q1199 349 1150 333Z"/>
+          <mask id="mask-left"><use href="#eye-left" fill="white"/><path d="M925 278 L938 284 L947 362 L935 363Z" fill="black"/></mask>
+          <mask id="mask-right"><use href="#eye-right" fill="white"/><path d="M1198 276 L1209 278 L1203 359 L1195 360Z" fill="black"/></mask>
+          <radialGradient id="iris"><stop stop-color="#fa5046"/><stop offset=".65" stop-color="#df1427"/><stop offset="1" stop-color="#5a0613"/></radialGradient>
+          <g id="sharingan"><circle r="29" fill="url(#iris)" stroke="#190a12" stroke-width="3"/><circle r="18" fill="none" stroke="#410511" stroke-width="1.8"/><circle r="7" fill="#11060c"/><g fill="#17060b"><path id="tomoe" d="M0-23 C9-23 10-13 4-12 C-1-11-4-16 0-19 Q-8-16-7-10 Q-10-18 0-23Z"/><use href="#tomoe" transform="rotate(120)"/><use href="#tomoe" transform="rotate(240)"/></g><circle cx="-8" cy="-10" r="3" fill="#ffb7a7" opacity=".6"/></g>
+        </defs>
+        <g mask="url(#mask-left)"><g transform="translate(918 318)"><g class="gaze" data-x="918" data-y="318"><use class="iris" href="#sharingan" transform="scale(.83)"/></g></g><use class="lid" href="#eye-left" fill="#283348"/></g>
+        <g mask="url(#mask-right)"><g transform="translate(1206 318)"><g class="gaze" data-x="1206" data-y="318"><use class="iris" href="#sharingan" transform="scale(.83)"/></g></g><use class="lid" href="#eye-right" fill="#283348"/></g>
+      </svg>
+    </div>
+    <div class="shade"></div>
+    <div id="storm-flash" aria-hidden="true"></div>
+    <div id="rain" aria-hidden="true"></div>
+    <header>
+      <div class="clock"><span id="hours">00</span><span class="colon">:</span><span id="minutes">00</span><span class="seconds-window"><span id="seconds">00</span></span></div>
+      <div id="date"></div>
+    </header>
+    <section id="dock" aria-label="Apps">
+      <div id="spotlight" aria-hidden="true"></div>
+      <div id="apps"></div>
+    </section>
+    <footer><div class="footer-help"><span id="hint">← → Choose an app <i>·</i> OK Open</span><small id="home-note">Home: starting…</small></div><nav aria-label="Dashboard controls"><button id="themes-button" aria-label="Choose theme"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5 9-5Zm-9 9 9 5 9-5M3 16l9 5 9-5"/></svg><span>Themes</span></button><button id="lg-home" aria-label="Open LG Home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 11 9-8 9 8M5 9v12h5v-7h4v7h5V9"/></svg><span>LG Home</span></button><button id="settings" aria-label="Customize dashboard">⚙</button></nav></footer>
+    <div id="crow-flight" aria-hidden="true"></div>
+    <div id="selection-power" aria-hidden="true"></div>
+    <div id="toast" role="status" aria-live="polite"></div>
+    <div id="rasengan-projectile" hidden aria-hidden="true"><span></span><span></span><span></span></div>
+    <div id="rasengan-impact" hidden aria-hidden="true"></div>
+    <aside id="panel" hidden>
+      <p class="eyebrow">SHARINGAN</p><h1>Make it yours.</h1>
+      <p class="description">Changes are saved on this TV.</p>
+      <button data-setting="themes">Background & themes <span>→</span></button>
+      <button data-setting="apps">Apps on home screen <span>→</span></button>
+      <button data-setting="ambientMusic">Background music <span id="ambientMusic-value">On</span></button>
+      <button data-setting="musicVolume">Music volume <span id="musicVolume-value">Low</span></button>
+      <button data-setting="rotationMode">Background rotation <span id="rotationMode-value">1 minute</span></button>
+      <button data-setting="motion">Animations <span id="motion-value">On</span></button>
+      <button data-setting="hour12">12-hour clock <span id="hour12-value">Off</span></button>
+      <button data-setting="close">Back to apps <span>←</span></button>
+      <p class="note">LG Home is beside Settings.<br>Your preferences save automatically.</p>
+    </aside>
+    <aside id="app-panel" hidden aria-label="Apps on home screen">
+      <div class="theme-heading"><div><p class="eyebrow">YOUR SHORTCUTS</p><h1>Apps on home screen</h1></div><button id="apps-close" aria-label="Close app selection">×</button></div>
+      <p class="description">Tick the apps you want to see. Changes save immediately.</p>
+      <div id="app-count" role="status"></div>
+      <div id="app-checklist"></div>
+      <p class="theme-help">Arrows Browse <i>·</i> OK Show / Hide <i>·</i> Back Done</p>
+    </aside>
+    <aside id="theme-panel" hidden aria-label="Choose a theme">
+      <div class="theme-heading"><div><p class="eyebrow">YOUR COLLECTION</p><h1>A different world.</h1></div><button id="themes-close" aria-label="Close themes">×</button></div>
+      <p class="description">Choose a background. Make it your own.</p>
+      <div id="theme-grid"></div>
+      <p class="theme-help">← → ↑ ↓ Browse <i>·</i> OK Apply <i>·</i> Back Close</p>
+    </aside>
+    <div id="intro" aria-hidden="true"><svg viewBox="-40 -40 80 80"><use href="#sharingan"/></svg></div>
+  </main>
+  <script src="catalog.js"></script>
+  <script src="screensaver.js"></script>
+  <script src="music-track.js"></script>
+  <script src="ambient.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

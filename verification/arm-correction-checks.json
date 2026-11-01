@@ -1,0 +1,26 @@
+{
+  "passed": true,
+  "poses": [
+    {
+      "selected": "YouTube",
+      "asset": "assets/red-arm-natural.png",
+      "angle": 69.43,
+      "scale": 1.05,
+      "origin": "211.2px 38.88px"
+    },
+    {
+      "selected": "Netflix",
+      "asset": "assets/red-arm-natural.png",
+      "angle": 59.68,
+      "scale": 1.05,
+      "origin": "211.2px 38.88px"
+    },
+    {
+      "selected": "Web Browser",
+      "asset": "assets/red-arm-natural.png",
+      "angle": -28.83,
+      "scale": 0.62,
+      "origin": "211.2px 38.88px"
+    }
+  ]
+}

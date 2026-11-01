@@ -1,0 +1,226 @@
+{
+  "defaults": {
+    "apps": [
+      "youtube.leanback.v4",
+      "netflix",
+      "amazon",
+      "hotstar",
+      "com.crunchyroll.webapp"
+    ],
+    "themes": [
+      "rain",
+      "red",
+      "naruto",
+      "hinata",
+      "sasuke",
+      "sakura"
+    ],
+    "catalog": 17,
+    "staticAsset": "assets/itachi-jutsu.png"
+  },
+  "eyes": {
+    "rain": {
+      "left": [
+        "translate(-14.11px, 7.25px)",
+        "translate(-15.44px, 5.44px)"
+      ],
+      "right": [
+        "translate(12.5px, 8.81px)",
+        "translate(6.51px, 12.01px)"
+      ],
+      "passed": true
+    },
+    "red": {
+      "left": [
+        "translate(-2.61px, 1.35px)",
+        "translate(-3.06px, 1.52px)"
+      ],
+      "right": [
+        "translate(1.8px, 1.89px)",
+        "translate(1.63px, 2.38px)"
+      ],
+      "passed": true
+    },
+    "naruto": {
+      "left": [
+        "translate(-2.56px, 1.18px)",
+        "translate(-2.59px, 1.15px)"
+      ],
+      "right": [
+        "translate(1.13px, 2.01px)",
+        "translate(0.66px, 2.11px)"
+      ],
+      "passed": true
+    },
+    "hinata": {
+      "left": [
+        "translate(-6.57px, 2.53px)",
+        "translate(-6.66px, 2.41px)"
+      ],
+      "right": [
+        "translate(2.84px, 4.89px)",
+        "translate(0.7px, 5.26px)"
+      ],
+      "passed": true
+    },
+    "sasuke": {
+      "left": [
+        "translate(-3.63px, 1.32px)",
+        "translate(-3.74px, 1.15px)"
+      ],
+      "right": [
+        "translate(1.48px, 2.68px)",
+        "translate(0.61px, 2.85px)"
+      ],
+      "passed": true
+    },
+    "sakura": {
+      "left": [
+        "translate(-4.4px, 1.82px)",
+        "translate(-5.03px, 2.01px)"
+      ],
+      "right": [
+        "translate(2.04px, 3.3px)",
+        "translate(1.02px, 4.02px)"
+      ],
+      "passed": true
+    }
+  },
+  "staticHand": {
+    "before": {
+      "src": "file:///media/developer/apps/usr/palm/applications/com.dextor.sharingan/assets/itachi-jutsu.png",
+      "transform": "none",
+      "bounds": "{\"x\":0,\"y\":0,\"width\":1920,\"height\":1080,\"top\":0,\"right\":1920,\"bottom\":1080,\"left\":0}"
+    },
+    "after": {
+      "src": "file:///media/developer/apps/usr/palm/applications/com.dextor.sharingan/assets/itachi-jutsu.png",
+      "transform": "none",
+      "bounds": "{\"x\":0,\"y\":0,\"width\":1920,\"height\":1080,\"top\":0,\"right\":1920,\"bottom\":1080,\"left\":0}"
+    },
+    "animations": 0
+  },
+  "crows": {
+    "count": 7,
+    "width": 69.19915771484375,
+    "designWidth": 119.031
+  },
+  "water": {
+    "first": 75.48038482666016,
+    "second": 76.71368408203125,
+    "advanced": true
+  },
+  "reducedMotion": {
+    "waterPaused": true,
+    "crows": 0
+  },
+  "powers": {
+    "naruto": {
+      "time": "2026-11-01T18:36:23.122Z",
+      "event": "character-power",
+      "data": {
+        "theme": "naruto",
+        "power": "Rasengan chakra",
+        "app": "amazon",
+        "strong": true,
+        "start": {
+          "x": 1519.29443359375,
+          "y": 560.5199432373047
+        },
+        "end": {
+          "x": 959.984375,
+          "y": 858.59375
+        }
+      }
+    },
+    "hinata": {
+      "time": "2026-11-01T18:36:29.035Z",
+      "event": "character-power",
+      "data": {
+        "theme": "hinata",
+        "power": "Twin Lion chakra",
+        "app": "amazon",
+        "strong": true,
+        "start": {
+          "x": 1612.8,
+          "y": 691.2
+        },
+        "end": {
+          "x": 959.984375,
+          "y": 851.0337524414062
+        }
+      }
+    },
+    "sasuke": {
+      "time": "2026-11-01T18:36:34.121Z",
+      "event": "character-power",
+      "data": {
+        "theme": "sasuke",
+        "power": "Chidori",
+        "app": "amazon",
+        "strong": true,
+        "start": {
+          "x": 1574.3999999999999,
+          "y": 734.4000000000001
+        },
+        "end": {
+          "x": 959.984375,
+          "y": 851.0337524414062
+        }
+      }
+    },
+    "sakura": {
+      "time": "2026-11-01T18:36:39.777Z",
+      "event": "character-power",
+      "data": {
+        "theme": "sakura",
+        "power": "healing chakra",
+        "app": "amazon",
+        "strong": true,
+        "start": {
+          "x": 1632,
+          "y": 648
+        },
+        "end": {
+          "x": 959.984375,
+          "y": 851.0337524414062
+        }
+      }
+    }
+  },
+  "rasengan": {
+    "cast": {
+      "time": "2026-11-01T18:36:45.444Z",
+      "event": "rasengan-cast",
+      "data": {
+        "app": "netflix",
+        "start": {
+          "x": 1406.9764404296875,
+          "y": 448.2019500732422
+        },
+        "end": {
+          "x": 532.7913818359375,
+          "y": 746.2757568359375
+        },
+        "duration": 830
+      }
+    },
+    "impact": {
+      "time": "2026-11-01T18:36:50.803Z",
+      "event": "rasengan-impact",
+      "data": "netflix"
+    },
+    "clean": true
+  },
+  "gallery": {
+    "count": 6,
+    "allVisible": true
+  },
+  "passed": true,
+  "build": "0.5.1",
+  "actualAppLaunch": {
+    "theme": "naruto",
+    "app": "YouTube",
+    "userConfirmed": "Yes, effect and YouTube worked",
+    "passed": true
+  }
+}
