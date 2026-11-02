@@ -2,7 +2,7 @@
 
 Private source repository: `code-crash/sharingan-theme-app`. An animated Naruto-themed app dashboard for LG webOS TVs.
 
-Personal dashboard for LG 55NU870BPLA, app ID `com.dextor.sharingan`, version 0.8.1. Runs locally on the TV without root, a background computer, or remote artwork downloads. An optional Home-button helper is installed for device testing; see [Home helper](home-helper/README.md).
+Personal dashboard for LG 55NU870BPLA, app ID `com.dextor.sharingan`, version 0.8.2. Runs locally on the TV without root, a background computer, or remote artwork downloads. An optional Home-button helper is installed for device testing; see [Home helper](home-helper/README.md).
 
 ## Use
 
@@ -31,9 +31,9 @@ Settings includes animation, eye blinking, 12-hour time, and background rotation
 
 ## Soundtrack
 
-The user-provided **Naruto Beautiful Music Mix** is bundled as `app/assets/naruto-ambient.mp3` for offline playback. The complete 54:16 track repeats indefinitely. The original Downloads file remains unchanged; the bundled copy is stereo MP3 at 128 kbps with cover artwork removed. Playback pauses before app handover, while hidden, or when disabled, and resumes on return. Low/Medium/High use app-local gain without changing the TV system volume.
+The user-provided **Naruto Beautiful Music Mix** is bundled as `app/assets/naruto-ambient.mp3` for offline playback. The complete 54:16 track repeats indefinitely. The original Downloads file remains unchanged; the bundled copy is stereo MP3 at 128 kbps with cover artwork removed. Playback pauses before app handover, while hidden, or when disabled, and resumes on return. Use the remote’s volume buttons to adjust listening volume. The player keeps a fixed, quiet app gain and has no separate volume setting.
 
-Settings contains eight everyday controls. Background rotation combines Off / 30 seconds / 1 minute into one row. Home is enabled automatically, with a note at the bottom left and a separate LG Home button beside Settings. No helper/test rows appear in Settings.
+Settings contains seven everyday controls. Background rotation combines Off / 30 seconds / 1 minute into one row. Home is enabled automatically, with a note at the bottom left and a separate LG Home button beside Settings. No helper/test rows appear in Settings.
 
 ## Keep dashboard visible
 
@@ -56,7 +56,7 @@ Requires Node.js and the official `@webos-tools/cli` npm package. Device pairing
 node --check app/app.js
 node home-helper/test-screensaver.cjs
 ZIG=/path/to/zig-0.14.1/zig node home-helper/build.mjs
-npm exec --yes --package=@webos-tools/cli -- ares-install -d lg-tv dist/home-helper/com.dextor.sharingan_0.8.1_all.ipk
+npm exec --yes --package=@webos-tools/cli -- ares-install -d lg-tv dist/home-helper/com.dextor.sharingan_0.8.2_all.ipk
 npm exec --yes --package=@webos-tools/cli -- ares-install -d lg-tv dist/home-helper/com.mbs.communityhomehelper_0.4.0_arm.ipk
 npm exec --yes --package=@webos-tools/cli -- ares-launch -d lg-tv com.dextor.sharingan
 ```

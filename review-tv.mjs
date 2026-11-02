@@ -1,5 +1,5 @@
 import {writeFile,mkdir} from 'node:fs/promises';
-const base=process.argv[2]||'http://127.0.0.1:43037',dir=process.argv[3]||'verification/v0.8';await mkdir(dir,{recursive:true});
+const base=process.argv[2]||'http://127.0.0.1:43037',dir=process.argv[3]||'verification/v0.8.2';await mkdir(dir,{recursive:true});
 const target=(await(await fetch(base+'/json/list')).json()).find(t=>t.description==='com.dextor.sharingan');if(!target)throw Error('Dashboard must be open');
 const ws=new WebSocket(target.webSocketDebuggerUrl);await new Promise((r,j)=>{ws.onopen=r;ws.onerror=j});
 let serial=0;const pending=new Map(),errors=[];ws.onmessage=e=>{const m=JSON.parse(e.data);if(m.method==='Runtime.exceptionThrown')errors.push(m.params.exceptionDetails);const p=pending.get(m.id);if(p){clearTimeout(p.timer);pending.delete(m.id);m.error?p.reject(Error(JSON.stringify(m.error))):p.resolve(m.result)}};
@@ -9,7 +9,7 @@ const delay=ms=>new Promise(r=>setTimeout(r,ms));
 async function key(code){await evaluate(`document.dispatchEvent(new KeyboardEvent('keydown',{keyCode:${code},which:${code},bubbles:true,cancelable:true}));true;`)}
 async function shot(name){if(process.env.REVIEW_SCREENSHOTS==='0')return;const r=await call('Page.captureScreenshot',{format:'png'});await writeFile(dir+'/'+name+'.png',Buffer.from(r.data,'base64'));}
 function check(value,message){if(!value)throw Error(message)}
-const report={version:'0.8.1',checks:{},runtimeErrors:errors};let saved;
+const report={version:'0.8.2',checks:{},runtimeErrors:errors};let saved;
 try{
  await call('Runtime.enable');saved=await evaluate('JSON.parse(JSON.stringify(options))');
  await evaluate(`(()=>{options.autoTheme=false;if(!appPanel.hidden)closeApps();if(!themePanel.hidden)closeThemes();if(!panel.hidden)closePanel();busy=false;applyOptions();select(0,true);return true;})()`);
@@ -44,7 +44,7 @@ try{
  report.checks.powers={};for(const theme of ['naruto','hinata','sasuke','sakura']){await evaluate(`setTheme('${theme}');select(2,true);clearPowerLayer();window.reviewFlight=sendPower(2,true);true`);await delay(250);await shot('power-'+theme);await evaluate('window.reviewFlight');check(await evaluate(`document.getElementById('selection-power').children.length===0`),'Power cleanup '+theme);report.checks.powers[theme]=true;}
  await evaluate(`setTheme('naruto');window.reviewRasengan=playRasengan(0);true`);await delay(350);await shot('rasengan');await evaluate('window.reviewRasengan');check(await evaluate(`document.getElementById('rasengan-projectile').hidden&&document.getElementById('rasengan-impact').hidden`),'Rasengan cleanup');report.checks.rasengan=true;
  await evaluate('openThemes()');check(await evaluate(`themeCards.every(c=>{const r=c.getBoundingClientRect();return r.top>=0&&r.bottom<=innerHeight})`),'Theme gallery overflow');await shot('themes');await evaluate('closeThemes();openPanel();true');
- report.checks.settings=await evaluate(`({count:panelButtons.length,labels:panelButtons.map(b=>b.dataset.setting),visible:panelButtons.every(b=>b.getBoundingClientRect().bottom<=innerHeight),hint:document.getElementById('hint').textContent})`);check(report.checks.settings.count===8&&report.checks.settings.visible&&!report.checks.settings.labels.some(s=>/Trial|Resume|Pause|useAsHome/.test(s)),'Settings controls');await shot('settings');await evaluate('closePanel()');
+ report.checks.settings=await evaluate(`({count:panelButtons.length,labels:panelButtons.map(b=>b.dataset.setting),visible:panelButtons.every(b=>b.getBoundingClientRect().bottom<=innerHeight),hint:document.getElementById('hint').textContent})`);check(report.checks.settings.count===7&&report.checks.settings.visible&&!report.checks.settings.labels.some(s=>/Trial|Resume|Pause|useAsHome|musicVolume/.test(s)),'Settings controls');await shot('settings');await evaluate('closePanel()');
  report.checks.soundtrack=await evaluate(`({state:ambient.state,source:window.DASHBOARD_MUSIC.src,loop:ambient.media?.loop,error:ambient.media?.error?.code})`);check(report.checks.soundtrack.source==='assets/naruto-ambient.mp3'&&report.checks.soundtrack.loop===true&&!report.checks.soundtrack.error,'Bundled music must loop without a media error');
  report.checks.screenSaver=await evaluate(`({state:screenSaver.state,enabled:options.keepVisible})`);check(report.checks.screenSaver.state==='registered'&&report.checks.screenSaver.enabled,'Screensaver registration');
  const introBefore=await evaluate(`diagnostics.filter(e=>e.event==='intro-shown').length`);

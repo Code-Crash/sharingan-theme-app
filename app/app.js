@@ -21,7 +21,7 @@ const THEMES=[
   {id:'sasuke',name:'Sasuke · Violet Storm',detail:'Sharingan & Rinnegan · Chidori lightning',image:'sasuke-storm.png'},
   {id:'sakura',name:'Sakura · Blossom Sanctuary',detail:'Green eyes · petals & healing chakra',image:'sakura-blossom.png'}
 ];
-const options=Object.assign({motion:true,blink:true,hour12:false,theme:'rain',autoTheme:true,themeIntervalSeconds:60,keepVisible:true,ambientMusic:true,musicVolume:.12},preferences);
+const options=Object.assign({motion:true,blink:true,hour12:false,theme:'rain',autoTheme:true,themeIntervalSeconds:60,keepVisible:true,ambientMusic:true},preferences);
 if(options.themeRotationVersion!==1){options.autoTheme=true;options.themeIntervalSeconds=60;options.themeRotationVersion=1;}
 if(![30,60].includes(options.themeIntervalSeconds))options.themeIntervalSeconds=60;
 options.keepVisible=true;
@@ -31,7 +31,7 @@ if(!THEMES.some(theme=>theme.id===options.theme))options.theme='rain';
 // remain theirs and are retained across reopening and future theme changes.
 if(options.appDefaultsVersion!==1){options.appIds=[...DEFAULT_APP_IDS];options.appDefaultsVersion=1;}
 options.appIds=Array.isArray(options.appIds)?options.appIds.filter(id=>CATALOG.some(app=>app.id===id)):[...DEFAULT_APP_IDS];
-if(![.12,.22,.32].includes(options.musicVolume))options.musicVolume=.12;
+delete options.musicVolume;
 if(!options.appIds.length)options.appIds=[BASE_APPS[0].id];
 let selected=0, panelIndex=0, busy=false, toastTimer, blinkTimer, introTimer;
 let themeIndex=0,themeReturn='apps',lastThemeChange=Date.now();
@@ -53,7 +53,7 @@ const screenSaver=new DashboardScreenSaver({clientName:APP_ID,
 const ambient=new DashboardAmbient({
   createAudio:src=>new Audio(src),getTrack:()=>window.DASHBOARD_MUSIC,
   createContext:()=>{const Context=window.AudioContext||window.webkitAudioContext;return Context?new Context():null;},
-  isVisible:()=>!document.hidden,isEnabled:()=>options.ambientMusic,getVolume:()=>options.musicVolume,
+  isVisible:()=>!document.hidden,isEnabled:()=>options.ambientMusic,getVolume:()=>.12,
   onEvent:(state,data)=>record('ambient-'+state,data)
 });
 window.sharingan={get apps(){return APPS;},catalog:CATALOG,themes:THEMES,diagnostics,get selected(){return selected;},get options(){return {...options};}};
@@ -239,7 +239,6 @@ function intro(){if(startupParams.homeShortcut===true){introHasPlayed=true;finis
 function applyOptions(){
   scene.classList.toggle('still',!options.motion);scene.dataset.theme=options.theme;
   ['motion','hour12','ambientMusic'].forEach(key=>document.getElementById(key+'-value').textContent=options[key]?'On':'Off');
-  document.getElementById('musicVolume-value').textContent=options.musicVolume===.12?'Low':options.musicVolume===.22?'Medium':'High';
   document.getElementById('rotationMode-value').textContent=options.autoTheme?(options.themeIntervalSeconds===30?'30 seconds':'1 minute'):'Off';
   if(!window.DASHBOARD_MUSIC.src)document.getElementById('ambientMusic-value').textContent='No track';
   try{localStorage.setItem('sharingan.preferences',JSON.stringify(options));}catch(_){}
@@ -260,7 +259,6 @@ panelButtons.forEach((button,index)=>{button.addEventListener('focus',()=>panelI
   else if(key==='themes')openThemes('settings');
   else if(key==='apps')openApps();
   else if(key==='ambientMusic'&&!window.DASHBOARD_MUSIC.src)toast('Add your Naruto soundtrack first.');
-  else if(key==='musicVolume'){const levels=[.12,.22,.32];options.musicVolume=levels[(levels.indexOf(options.musicVolume)+1)%levels.length];applyOptions();}
   else if(key==='rotationMode'){if(!options.autoTheme){options.autoTheme=true;options.themeIntervalSeconds=30;}else if(options.themeIntervalSeconds===30)options.themeIntervalSeconds=60;else options.autoTheme=false;lastThemeChange=Date.now();applyOptions();}
   else{options[key]=!options[key];applyOptions();}
 });});
