@@ -2,7 +2,7 @@
 
 Private source repository: `code-crash/sharingan-theme-app`. An animated Naruto-themed app dashboard for LG webOS TVs.
 
-Personal dashboard for LG 55NU870BPLA, app ID `com.dextor.sharingan`, version 0.8.2. Runs locally on the TV without root, a background computer, or remote artwork downloads. An optional Home-button helper is installed for device testing; see [Home helper](home-helper/README.md).
+Personal dashboard for LG 55NU870BPLA, app ID `com.dextor.sharingan`, version 0.9.1. Runs locally on the TV without root, a background computer, or remote artwork downloads. An optional Home-button helper is installed for device testing; see [Home helper](home-helper/README.md).
 
 ## Use
 
@@ -14,7 +14,7 @@ Personal dashboard for LG 55NU870BPLA, app ID `com.dextor.sharingan`, version 0.
 
 The default row is YouTube, Netflix, Prime Video, JioHotstar, and Crunchyroll, in that order. Other apps start unchecked. Changes save across reopening and theme changes. This five-app default migrates once; subsequent checkbox edits are retained.
 
-## Six themes
+## Eight themes
 
 | Theme | Animation and power |
 | --- | --- |
@@ -24,6 +24,8 @@ The default row is YouTube, Netflix, Prime Video, JioHotstar, and Crunchyroll, i
 | Hinata — Moonlit Byakugan | Tracking lavender eyes, water-texture displacement limited to the lake, mist and fireflies, Twin Lion chakra pulse |
 | Sasuke — Violet Storm | Tracking Sharingan and Rinnegan eyes, storm glow, Chidori lightning toward the selected app |
 | Sakura — Blossom Sanctuary | Tracking green eyes, falling petals, healing chakra pulse toward the selected app |
+| Kurama — Nine-Tails Moon | Naruto faces the viewer; slowly deforming tails, smoke, embers, four tracking eyes, Nine-Tails chakra on app launch |
+| Naruto — Chakra Sync | Clear gold eyes, flowing chakra contours, flame wisps, drifting sparks, moving water, golden Rasengan and arrival ring |
 
 Crimson Moon’s hands never rotate, scale, or change pose with selection. The complete jutsu artwork is one static image; crows supply the interaction. Original Artwork was removed from the picker; legacy selections migrate to Hinata.
 
@@ -55,24 +57,29 @@ Requires Node.js and the official `@webos-tools/cli` npm package. Device pairing
 ```sh
 node --check app/app.js
 node home-helper/test-screensaver.cjs
+node home-helper/test-kurama-scenes.cjs
 ZIG=/path/to/zig-0.14.1/zig node home-helper/build.mjs
-npm exec --yes --package=@webos-tools/cli -- ares-install -d lg-tv dist/home-helper/com.dextor.sharingan_0.8.2_all.ipk
+npm exec --yes --package=@webos-tools/cli -- ares-install -d lg-tv dist/home-helper/com.dextor.sharingan_0.9.1_all.ipk
 npm exec --yes --package=@webos-tools/cli -- ares-install -d lg-tv dist/home-helper/com.mbs.communityhomehelper_0.4.0_arm.ipk
 npm exec --yes --package=@webos-tools/cli -- ares-launch -d lg-tv com.dextor.sharingan
 ```
 
-Preview with `python3 -m http.server 8765 --bind 127.0.0.1`, then open `http://127.0.0.1:8765/app/`. App launching works on the installed TV app.
+Preview with `python3 -m http.server 8765 --bind 127.0.0.1`, then open `http://127.0.0.1:8765/preview.html`. The preview frames the dashboard at 16:9 and has buttons for the two new themes. Direct review links use `preview.html?theme=kurama` and `preview.html?theme=chakra`. Arrow keys select apps; Enter previews the character power and shows a local-only launch notice. No TV connection is made from the browser preview.
+
+The new scenes use a WebGL texture mesh at a maximum of 30 fps with protected face regions. If WebGL is unavailable, localized SVG displacement animates the tails and water. Only the visible, selected scene animates. Hidden pages and Animations Off stop the mesh, SVG timelines, and CSS effects. The original static image remains available if the renderer cannot initialize.
+
+Version 0.9.1 includes moving scenery in every theme. Original character scenes have slowly drifting cloud banks masked to the background; Naruto also has moving sun rays, Hinata has a slowly rotating lunar surface, gently windblown foliage, water and mist, Sasuke has rolling storm layers and lightning, and Sakura has windblown petals and drifting blossom light. Crimson Moon retains its rotating Sharingan. Motion pauses when hidden or switched off. See the latest verification report for deployment status.
 
 ## Artwork and implementation
 
-Final bitmap assets in `app/assets/`: `itachi-rain.png`, `itachi-jutsu.png`, `red-background.png`, `naruto-eyes-base.png`, `hinata-moon.png`, `sasuke-storm.png`, and `sakura-blossom.png`.
+Final bitmap assets in `app/assets/`: `itachi-rain.png`, `itachi-jutsu.png`, `red-background.png`, `naruto-eyes-base.png`, `hinata-moon.png`, `sasuke-storm.png`, and `sakura-blossom.png`, `kurama-moon.png`, and `chakra-sync.png`.
 
-These are built-in imagegen outputs. Prompts are in `artwork-prompt.txt`, `themes-artwork-prompts.txt`, and `artwork-v0.5-prompts.txt`. Superseded cutouts are retained in `references/`. SVG eyes and effects are code assets. Apple TV, Crunchyroll, Jellyfin, and AirPlay icons use Simple Icons (CC0); the license is in `app/assets/simple-icons-LICENSE.md`.
+These are built-in imagegen outputs. Prompts are in `artwork-prompt.txt`, `themes-artwork-prompts.txt`, `artwork-v0.5-prompts.txt`, and `artwork-v0.9-prompts.txt`. Superseded cutouts are retained in `references/`. SVG eyes and effects are code assets. Apple TV, Crunchyroll, Jellyfin, and AirPlay icons use Simple Icons (CC0); the license is in `app/assets/simple-icons-LICENSE.md`.
 
 `mountEyes` contains measured eye apertures and iris positions. Tracking maps icon coordinates into each eye SVG’s actual transformed bounds, including Naruto’s closer framing. Hands are never articulated in the final version. Hinata’s water effect is clipped to the lake; the face and landscape remain undistorted.
 
 ## Verification
 
-`review-tv.mjs` runs the current deep TV review, restoring saved preferences afterward. It checks navigation, nested panels, app toggles, the expanded app row, six themes, eyes, static Itachi artwork, crows, water, powers, compact Settings, offline looping music, and screensaver registration. Current results are in `verification/v0.8.1/`; older folders document historical builds. Physical remote behavior is validated separately.
+`review-tv.mjs` runs the current deep TV review, restoring saved preferences afterward. It checks navigation, nested panels, app toggles, the expanded app row, eight themes, eyes, static Itachi artwork, crows, water, powers, compact Settings, offline looping music, background motion in all themes, and screensaver registration. Current results are in `verification/v0.9.1/`; older folders document historical builds. Physical remote behavior is validated separately.
 
 The historical `review-v0.5.mjs` connects to the app inspector URL printed by `ares-inspect` and checks six themes, eye tracking, five-app defaults, static hands, crow count and size, water timing, reduced motion, power animations, Rasengan sequencing, and gallery layout. Actual-TV screenshots and machine-readable results are in `verification/v0.5/`. Older artifacts document previous versions.

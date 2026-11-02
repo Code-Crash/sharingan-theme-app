@@ -1,0 +1,11 @@
+Mode: built-in image_gen; precise-object-edit. Production wallpapers derived from the two user-approved refined UI concepts. No UI graphics are baked into the runtime assets.
+
+OUTPUT: app/assets/kurama-moon.png
+REFERENCE: exec-53e5a2f1-0fc3-45c1-955a-52ecd7c88a8a.png
+PROMPT: Remove every interface graphic and all lettering (clock, date, title, header lines, streaming icons/logos/labels, selection glow and footer controls). Reconstruct the natural dark night sky and rocky valley behind them, preserving exact canvas, character coordinates and scale, Naruto facing the viewer on the right ridge, Kurama and nine tails, red moon, fur, eyes, linework and palette. Keep a quiet dark bottom area for real software UI. No logos, text, borders or watermark.
+
+OUTPUT: app/assets/chakra-sync.png
+REFERENCE: exec-1e0d3502-572c-41c1-af42-bd415e2c69b0.png
+PROMPT: Remove every interface graphic and all lettering, reconstruct matching moonlit sky, water, trees and dark lower landscape. Preserve exact character positions and scale, crisp faces and amber eyes, Kurama’s chakra tails, Naruto’s gold cloak and markings, flame-like gold contours, moon and village. No extra bloom over faces, no repositioning, no logos, text, borders or watermark.
+
+Runtime motion: code-native mesh deformation uses nine tail influence regions with face protection; SVG displacement is the renderer fallback. Separate CSS flame wisps/particles and measured SVG eyes add motion without rotating limbs.

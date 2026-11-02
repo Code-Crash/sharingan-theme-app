@@ -19,7 +19,9 @@ const THEMES=[
   {id:'naruto',name:'Naruto · Golden Hour',detail:'Tracking eyes · Rasengan app launch',image:'naruto-eyes-base.png'},
   {id:'hinata',name:'Hinata · Moonlit Byakugan',detail:'Lavender eyes · moon mist & fireflies',image:'hinata-moon.png'},
   {id:'sasuke',name:'Sasuke · Violet Storm',detail:'Sharingan & Rinnegan · Chidori lightning',image:'sasuke-storm.png'},
-  {id:'sakura',name:'Sakura · Blossom Sanctuary',detail:'Green eyes · petals & healing chakra',image:'sakura-blossom.png'}
+  {id:'sakura',name:'Sakura · Blossom Sanctuary',detail:'Green eyes · petals & healing chakra',image:'sakura-blossom.png'},
+  {id:'kurama',name:'Kurama · Nine-Tails Moon',detail:'Slow tail sway · embers & fox chakra',image:'kurama-moon.png'},
+  {id:'chakra',name:'Naruto · Chakra Sync',detail:'Living chakra flames · golden Rasengan',image:'chakra-sync.png'}
 ];
 const options=Object.assign({motion:true,blink:true,hour12:false,theme:'rain',autoTheme:true,themeIntervalSeconds:60,keepVisible:true,ambientMusic:true},preferences);
 if(options.themeRotationVersion!==1){options.autoTheme=true;options.themeIntervalSeconds=60;options.themeRotationVersion=1;}
@@ -27,6 +29,9 @@ if(![30,60].includes(options.themeIntervalSeconds))options.themeIntervalSeconds=
 options.keepVisible=true;
 if(options.theme==='poster')options.theme='hinata';
 if(!THEMES.some(theme=>theme.id===options.theme))options.theme='rain';
+// Local review links select a scene without changing the TV's startup behavior.
+const previewTheme=typeof PalmServiceBridge==='undefined'?new URLSearchParams(location.search).get('theme'):null;
+if(THEMES.some(theme=>theme.id===previewTheme)){options.theme=previewTheme;options.autoTheme=false;}
 // Apply the user's five-app default once on this upgrade; later checkbox edits
 // remain theirs and are retained across reopening and future theme changes.
 if(options.appDefaultsVersion!==1){options.appIds=[...DEFAULT_APP_IDS];options.appDefaultsVersion=1;}
@@ -38,6 +43,8 @@ let themeIndex=0,themeReturn='apps',lastThemeChange=Date.now();
 let appIndex=0,homeStateTimer,homeStatePending=null,homeEnsurePending=null,introHasPlayed=false;
 const pendingRequests=new Set();
 const scene=document.getElementById('scene');
+mountBackgroundAtmospheres();
+const kuramaScenes=new DashboardKuramaScenes();
 const panel=document.getElementById('panel');
 const panelButtons=Array.from(panel.querySelectorAll('button'));
 const themePanel=document.getElementById('theme-panel');
@@ -121,10 +128,11 @@ function mountEyes(theme,eyes,skin){
     const id='eye-'+theme+'-'+index,gradient=id+'-iris',color=eye.color||'#247fda';
     const rings=eye.type==='byakugan'?'<circle r="'+(eye.r*.72)+'" fill="none" stroke="#b8a5df" stroke-width="1" opacity=".65"/><circle r="'+(eye.r*.15)+'" fill="#f0eaff" opacity=".65"/>':eye.type==='rinnegan'?[.25,.49,.73].map(size=>'<circle r="'+(eye.r*size)+'" fill="none" stroke="#51406e" stroke-width=".8"/>').join('')+'<circle r="1.5" fill="#45305c"/>':'<circle r="'+eye.r*.36+'" fill="#071629"/><circle cx="'+(-eye.r*.28)+'" cy="'+(-eye.r*.35)+'" r="'+eye.r*.16+'" fill="#effbff"/>';
     const texture=Array.from({length:16},(_,i)=>{const a=i*Math.PI/8;return '<path d="M'+Math.cos(a)*eye.r*.48+' '+Math.sin(a)*eye.r*.48+' L'+Math.cos(a)*eye.r*.87+' '+Math.sin(a)*eye.r*.87+'" stroke="#e3f4ff" stroke-width=".5" opacity=".2"/>';}).join('');
-    const iris=eye.type==='sharingan'?'<use href="#sharingan" transform="scale('+(eye.r/29)+')"/>':'<circle r="'+eye.r+'" fill="url(#'+gradient+')" stroke="'+(eye.type==='byakugan'?'#a591cb':'#1a2543')+'" stroke-width=".8"/>'+texture+rings;
-    const inner=eye.type==='byakugan'?'#f2edff':eye.type==='rinnegan'?'#d0bde7':theme==='sakura'?'#9cdabc':'#7fc9f5';
-    const outer=eye.type==='byakugan'?'#a695ce':eye.type==='rinnegan'?'#796293':theme==='sakura'?'#255d49':'#174f79';
-    return '<defs><path id="'+id+'" d="'+eye.path+'"/><clipPath id="'+id+'-clip"><use href="#'+id+'"/></clipPath><radialGradient id="'+gradient+'"><stop stop-color="'+inner+'"/><stop offset=".6" stop-color="'+color+'"/><stop offset="1" stop-color="'+outer+'"/></radialGradient></defs><g clip-path="url(#'+id+'-clip)"><use href="#'+id+'" fill="'+(eye.type==='byakugan'?'#e3daf3':'#dce7e9')+'"/><g transform="translate('+eye.x+' '+eye.y+')"><g class="gaze '+(eye.type==='byakugan'?'byakugan':'')+'" data-x="'+eye.x+'" data-y="'+eye.y+'" data-range-x="'+eye.r*.34+'" data-range-y="'+eye.r*.24+'">'+iris+'</g></g><use class="lid" href="#'+id+'" fill="'+skin+'"/></g>';
+    const slit=eye.type==='fox'||eye.type==='chakra';
+    const iris=eye.type==='sharingan'?'<use href="#sharingan" transform="scale('+(eye.r/29)+')"/>':slit?'<circle r="'+eye.r+'" fill="url(#'+gradient+')"/><ellipse rx="'+eye.r*.18+'" ry="'+eye.r*.85+'" fill="#160b08" transform="rotate('+(eye.rotation||0)+')"/><circle cx="'+(-eye.r*.26)+'" cy="'+(-eye.r*.30)+'" r="'+eye.r*.13+'" fill="#fff0c7"/>':'<circle r="'+eye.r+'" fill="url(#'+gradient+')" stroke="'+(eye.type==='byakugan'?'#a591cb':'#1a2543')+'" stroke-width=".8"/>'+texture+rings;
+    const inner=eye.inner||(slit?'#ffdf78':eye.type==='byakugan'?'#f2edff':eye.type==='rinnegan'?'#d0bde7':theme==='sakura'?'#9cdabc':'#7fc9f5');
+    const outer=eye.outer||(slit?'#ac3a08':eye.type==='byakugan'?'#a695ce':eye.type==='rinnegan'?'#796293':theme==='sakura'?'#255d49':'#174f79');
+    return '<defs><path id="'+id+'" d="'+eye.path+'"/><clipPath id="'+id+'-clip"><use href="#'+id+'"/></clipPath><radialGradient id="'+gradient+'"><stop stop-color="'+inner+'"/><stop offset=".6" stop-color="'+color+'"/><stop offset="1" stop-color="'+outer+'"/></radialGradient></defs><g class="'+(eye.type==='fox'?'fox-eye':'')+'" clip-path="url(#'+id+'-clip)"><use href="#'+id+'" fill="'+(eye.sclera||(slit?'#f1bc62':eye.type==='byakugan'?'#e3daf3':'#dce7e9'))+'"/><g transform="translate('+eye.x+' '+eye.y+')"><g class="gaze '+(eye.type==='byakugan'?'byakugan':'')+'" data-x="'+eye.x+'" data-y="'+eye.y+'" data-range-x="'+eye.r*.34+'" data-range-y="'+eye.r*.24+'">'+iris+'</g></g><use class="lid" href="#'+id+'" fill="'+(eye.skin||skin)+'"/></g>';
   }).join('');
   document.getElementById(theme+'-stage').appendChild(svg);
 }
@@ -159,10 +167,10 @@ async function sendPower(index,strong=false){
   if(!options.motion)return;
   clearPowerLayer();
   const theme=options.theme,layer=document.getElementById('selection-power'),bounds=scene.getBoundingClientRect(),icon=buttons[index].querySelector('.logo').getBoundingClientRect();
-  const origins={naruto:[.791,.45],hinata:[.84,.64],sasuke:[.82,.68],sakura:[.85,.60]};
+  const origins={naruto:[.791,.45],hinata:[.84,.64],sasuke:[.82,.68],sakura:[.85,.60],kurama:[.737,.337],chakra:[.762,.55]};
   const origin=origins[theme]||[.7,.55],start={x:bounds.width*origin[0],y:bounds.height*origin[1]},end={x:icon.left+icon.width/2-bounds.left,y:icon.top+icon.height/2-bounds.top};
   if(theme==='naruto'){const orb=document.getElementById('rasengan').getBoundingClientRect();start.x=orb.left+orb.width/2-bounds.left;start.y=orb.top+orb.height/2-bounds.top;}
-  const names={naruto:'Rasengan chakra',hinata:'Twin Lion chakra',sasuke:'Chidori',sakura:'healing chakra'};
+  const names={naruto:'Rasengan chakra',hinata:'Twin Lion chakra',sasuke:'Chidori',sakura:'healing chakra',kurama:'Nine-Tails chakra',chakra:'golden Rasengan'};
   record('character-power',{theme,power:names[theme],app:APPS[index].id,strong,start,end});
   if(theme==='sasuke'){
     const arc=document.createElementNS('http://www.w3.org/2000/svg','svg');arc.classList.add('chidori-arc');arc.setAttribute('viewBox','0 0 '+bounds.width+' '+bounds.height);
@@ -175,10 +183,15 @@ async function sendPower(index,strong=false){
   const orb=document.createElement('div');orb.className='power-orb power-'+theme+(strong?' strong':'');
   if(theme==='hinata')orb.innerHTML='<svg viewBox="0 0 120 120"><path d="M18 46 12 18 39 29 60 17 81 29 108 18 102 46 112 69 94 96 73 112 60 104 47 112 26 96 8 69Z"/><path d="m30 55 17 6-11 8m54-14-17 6 11 8M47 82l13 8 13-8m-13 8v12" class="lion-face"/></svg>';
   if(theme==='sakura')orb.innerHTML='<span class="healing-ribbon"></span><span class="healing-ribbon"></span><span class="healing-ribbon"></span>';
+  if(theme==='kurama'||theme==='chakra')orb.innerHTML='<span class="fox-chakra-ring"></span><span class="fox-chakra-ring"></span><span class="fox-chakra-ring"></span>';
   layer.appendChild(orb);const scale=strong?1:.55;
   const frame=(p,s)=>'translate('+p.x+'px,'+p.y+'px) translate(-50%,-50%) scale('+s+')';
   const flight=orb.animate([{transform:frame(start,.2),opacity:0},{transform:frame(start,scale),opacity:1,offset:.15},{transform:frame({x:(start.x+end.x)/2,y:Math.min(start.y,end.y)-bounds.height*.08},scale),opacity:1,offset:.55},{transform:frame(end,scale*.5),opacity:0}],{duration:strong?850:650,easing:'cubic-bezier(.2,.4,.7,1)',fill:'forwards'});
   await flight.finished.catch(()=>{});orb.remove();
+  if(strong&&['kurama','chakra'].includes(theme)&&!document.hidden&&options.motion){
+    const impact=document.createElement('div');impact.className='fox-impact '+theme+'-impact';impact.style.left=end.x+'px';impact.style.top=end.y+'px';layer.appendChild(impact);
+    await impact.animate([{transform:'translate(-50%,-50%) scale(.25)',opacity:.8},{transform:'translate(-50%,-50%) scale(1.4)',opacity:0}],{duration:340,easing:'ease-out'}).finished.catch(()=>{});impact.remove();
+  }
 }
 async function checkApps(){
   if(typeof PalmServiceBridge==='undefined')return;
@@ -194,7 +207,7 @@ async function launch(index){
   busy=true;scene.classList.add('opening');
   try{
     if(options.motion&&options.theme==='naruto')await playRasengan(index);
-    else if(options.motion&&['hinata','sasuke','sakura'].includes(options.theme))await sendPower(index,true);
+    else if(options.motion&&['hinata','sasuke','sakura','kurama','chakra'].includes(options.theme))await sendPower(index,true);
     else if(options.motion&&['red','rain'].includes(options.theme)){sendCrows(index);await new Promise(resolve=>setTimeout(resolve,850));}
     else await new Promise(resolve=>setTimeout(resolve,options.motion?280:0));
     if(document.hidden){record('launch-cancelled',app.id);return;}
@@ -235,17 +248,20 @@ function updateClock(){
 }
 function blink(){if(options.blink&&options.motion&&!document.hidden){scene.classList.remove('blinking');void scene.offsetWidth;scene.classList.add('blinking');}clearTimeout(blinkTimer);blinkTimer=setTimeout(blink,4000+Math.random()*6000);}
 function finishIntro(){clearTimeout(introTimer);document.getElementById('intro').classList.add('done');}
-function intro(){if(startupParams.homeShortcut===true){introHasPlayed=true;finishIntro();return;}if(introHasPlayed){finishIntro();return;}introHasPlayed=true;record('intro-shown');clearTimeout(introTimer);const el=document.getElementById('intro');if(!options.motion){el.classList.add('done');return;}el.classList.remove('done');const svg=el.querySelector('svg');svg.style.animation='none';void svg.getBoundingClientRect();svg.style.animation='';introTimer=setTimeout(()=>el.classList.add('done'),1000);}
+function intro(){if(startupParams.homeShortcut===true||previewTheme){introHasPlayed=true;finishIntro();return;}if(introHasPlayed){finishIntro();return;}introHasPlayed=true;record('intro-shown');clearTimeout(introTimer);const el=document.getElementById('intro');if(!options.motion){el.classList.add('done');return;}el.classList.remove('done');const svg=el.querySelector('svg');svg.style.animation='none';void svg.getBoundingClientRect();svg.style.animation='';introTimer=setTimeout(()=>el.classList.add('done'),1000);}
 function applyOptions(){
   scene.classList.toggle('still',!options.motion);scene.dataset.theme=options.theme;
+  kuramaScenes.sync(options.theme,options.motion,!document.hidden&&!scene.classList.contains('backgrounded'));
   ['motion','hour12','ambientMusic'].forEach(key=>document.getElementById(key+'-value').textContent=options[key]?'On':'Off');
   document.getElementById('rotationMode-value').textContent=options.autoTheme?(options.themeIntervalSeconds===30?'30 seconds':'1 minute'):'Off';
   if(!window.DASHBOARD_MUSIC.src)document.getElementById('ambientMusic-value').textContent='No track';
   try{localStorage.setItem('sharingan.preferences',JSON.stringify(options));}catch(_){}
   document.querySelectorAll('.theme-card').forEach(card=>{const active=card.dataset.theme===options.theme;card.setAttribute('aria-pressed',String(active));card.querySelector('.theme-active').hidden=!active;});
-  const water=document.getElementById('hinata-water');
-  if(options.motion&&!document.hidden)water.unpauseAnimations();else{
-    water.pauseAnimations();clearPowerLayer();
+  const scenery=document.querySelectorAll('#hinata-water,.hinata-tree-wind svg');
+  const animateScenery=options.motion&&!document.hidden&&!scene.classList.contains('backgrounded');
+  scenery.forEach(svg=>animateScenery?svg.unpauseAnimations():svg.pauseAnimations());
+  if(!animateScenery){
+    clearPowerLayer();
     const crows=document.getElementById('crow-flight');crows.getAnimations({subtree:true}).forEach(a=>a.cancel());crows.replaceChildren();
     for(const id of ['rasengan-projectile','rasengan-impact'])document.getElementById(id).getAnimations().forEach(a=>a.cancel());
   }
@@ -264,6 +280,7 @@ panelButtons.forEach((button,index)=>{button.addEventListener('focus',()=>panelI
 });});
 function refreshHomeState(){
   clearTimeout(homeStateTimer);
+  if(typeof PalmServiceBridge==='undefined'){document.getElementById('home-note').textContent='Local preview · app launch effects enabled';return Promise.resolve();}
   if(homeStatePending)return homeStatePending;
   homeStatePending=request('status',{},'com.dextor.sharingan.helper').then(result=>{
     const state=result.state;document.getElementById('home-note').textContent=state.active?'Home: Sharingan · Hold Home: LG Home':state.starting?'Home: starting…':'Home shortcut unavailable';
@@ -277,7 +294,8 @@ function updateHint(){
 }
 function syncDashboardVisibility(visible){
   scene.classList.toggle('backgrounded',!visible);
-  const water=document.getElementById('hinata-water');if(visible&&options.motion)water.unpauseAnimations();else water.pauseAnimations();
+  kuramaScenes.sync(options.theme,options.motion,visible);
+  for(const water of document.querySelectorAll('#hinata-water,.hinata-tree-wind svg')){if(visible&&options.motion)water.unpauseAnimations();else water.pauseAnimations();}
   if(!visible){finishIntro();clearTimeout(homeStateTimer);clearPowerLayer();const crows=document.getElementById('crow-flight');crows.getAnimations({subtree:true}).forEach(a=>a.cancel());crows.replaceChildren();}
 }
 
@@ -290,7 +308,7 @@ async function openLGHome(){
   // A direct stock-Home launch does not emit a physical Home key; keep the shortcut enabled.
   try{screenSaver.suspend();await ambient.suspend();await request('launch',{id:'com.webos.app.home'});}catch(e){screenSaver.resume();ambient.resume();toast(e.errorText||'Could not open LG Home.');}
 }
-function ensureHomeHelper(){if(window.homeMaintenance)return Promise.resolve();if(homeEnsurePending)return homeEnsurePending;homeEnsurePending=request('resume',{trialSeconds:0,keepForeground:false},'com.dextor.sharingan.helper').then(()=>refreshHomeState()).catch(error=>{record('home-start-error',error);document.getElementById('home-note').textContent='Home shortcut unavailable';}).finally(()=>{homeEnsurePending=null;});return homeEnsurePending;}
+function ensureHomeHelper(){if(window.homeMaintenance)return Promise.resolve();if(typeof PalmServiceBridge==='undefined'){document.getElementById('home-note').textContent='Local preview · app launch effects enabled';return Promise.resolve();}if(homeEnsurePending)return homeEnsurePending;homeEnsurePending=request('resume',{trialSeconds:0,keepForeground:false},'com.dextor.sharingan.helper').then(()=>refreshHomeState()).catch(error=>{record('home-start-error',error);document.getElementById('home-note').textContent='Home shortcut unavailable';}).finally(()=>{homeEnsurePending=null;});return homeEnsurePending;}
 document.getElementById('lg-home').addEventListener('click',openLGHome);
 document.getElementById('settings').addEventListener('click',openPanel);
 ensureHomeHelper();
@@ -301,7 +319,7 @@ THEMES.forEach((theme,index)=>{
   card.addEventListener('focus',()=>themeIndex=index);card.addEventListener('click',()=>{setTheme(theme.id);closeThemes();});document.getElementById('theme-grid').appendChild(card);
 });
 const themeCards=Array.from(document.querySelectorAll('.theme-card'));
-function setTheme(id){if(busy||!THEMES.some(theme=>theme.id===id))return;document.getElementById('crow-flight').getAnimations({subtree:true}).forEach(a=>a.cancel());document.getElementById('crow-flight').replaceChildren();clearPowerLayer();options.theme=id;lastThemeChange=Date.now();applyOptions();record('theme-changed',id);sendSelectionPower(selected);}
+function setTheme(id){if(busy||!THEMES.some(theme=>theme.id===id))return;document.getElementById('crow-flight').getAnimations({subtree:true}).forEach(a=>a.cancel());document.getElementById('crow-flight').replaceChildren();clearPowerLayer();options.theme=id;lastThemeChange=Date.now();applyOptions();record('theme-changed',id);if(typeof PalmServiceBridge==='undefined'&&window.parent!==window)window.parent.postMessage({type:'sharingan-theme',theme:id},location.origin);sendSelectionPower(selected);}
 function openThemes(from='apps'){if(busy)return;themeReturn=from;themePanel.hidden=false;themeIndex=THEMES.findIndex(t=>t.id===options.theme);themeCards[themeIndex].focus();updateHint();}
 function closeThemes(){themePanel.hidden=true;if(themeReturn==='settings'&&!panel.hidden)panelButtons[0].focus();else select(selected,true);updateHint();}
 document.getElementById('themes-button').addEventListener('click',()=>openThemes());
@@ -329,7 +347,7 @@ function openApps(){appPanel.hidden=false;appIndex=0;appCheckboxes[0].focus();up
 function closeApps(){appPanel.hidden=true;panelButtons.find(button=>button.dataset.setting==='apps').focus();updateHint();}
 document.getElementById('apps-close').addEventListener('click',closeApps);
 window.addEventListener('resize',updateTracking);
-window.addEventListener('pagehide',()=>{screenSaver.suspend();ambient.suspend();});
+window.addEventListener('pagehide',()=>{screenSaver.suspend();ambient.suspend();kuramaScenes.stop();});
 document.addEventListener('pointerdown',()=>{if(!ambient.suspended)ambient.unlock();},{passive:true});
 document.addEventListener('keydown',()=>{if(!ambient.suspended)ambient.unlock();},{capture:true});
 document.addEventListener('keydown',event=>{
@@ -377,4 +395,16 @@ mountEyes('sakura',[
   {x:1161,y:235,r:15,color:'#49a67c',path:'M1128 230 Q1152 213 1178 230 L1189 239 Q1154 259 1134 243Z'},
   {x:1283,y:185,r:17,color:'#49a67c',path:'M1251 199 Q1259 174 1296 167 L1310 165 Q1302 198 1270 206Z'}
 ],'#c78f8b');
+mountEyes('kurama',[
+  {x:1222,y:273,r:7,type:'fox',color:'#ef3b1c',inner:'#ffb98a',outer:'#951706',skin:'#c65516',sclera:'#ee6d39',rotation:24,path:'M1211 262 Q1220 268 1232 275 L1227 282 Q1218 281 1214 274Z'},
+  {x:1300,y:239,r:9.2,type:'fox',color:'#ff4b27',inner:'#ffc29e',outer:'#a8200b',skin:'#c65516',sclera:'#f68f5e',rotation:-16,path:'M1287 236 Q1298 225 1315 225 Q1312 241 1301 249 L1292 247Z'},
+  {x:1470,y:281,r:2.5,color:'#3b8cba',skin:'#d79e7d',path:'M1466 279 Q1470 276 1474 278 L1474 282 Q1470 285 1467 283Z'},
+  {x:1486,y:275,r:2.7,color:'#3b8cba',skin:'#d79e7d',path:'M1481 274 Q1486 271 1491 272 L1490 277 Q1486 279 1482 277Z'}
+],'#d49b70');
+mountEyes('chakra',[
+  {x:862,y:338,r:9,type:'fox',color:'#f8a324',skin:'#cf8b32',rotation:25,path:'M850 326 Q860 331 876 341 Q873 350 864 347 Q855 341 850 326Z'},
+  {x:966,y:292,r:12,type:'fox',color:'#ffb82f',skin:'#ce8b31',rotation:-18,path:'M949 292 Q959 279 980 276 Q980 295 968 303 Q956 307 951 301Z'},
+  {x:1205,y:334,r:9.3,type:'chakra',color:'#f7ae2c',skin:'#dcae86',sclera:'#ede0c7',path:'M1190 328 Q1201 319 1216 330 L1220 336 Q1206 347 1197 340Z'},
+  {x:1278,y:305,r:11,type:'chakra',color:'#f9b63c',skin:'#deb58d',sclera:'#eee2cb',path:'M1260 305 Q1273 289 1295 291 L1302 291 Q1296 310 1277 316 L1267 312Z'}
+],'#d9ab7f');
 renderApps();applyOptions();select(0);updateClock();setInterval(updateClock,1000);blinkTimer=setTimeout(blink,4500);intro();checkApps();record('ready',{tv:typeof PalmServiceBridge!=='undefined'});

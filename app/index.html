@@ -18,6 +18,8 @@
       <div id="hinata-stage" aria-hidden="true"><img src="assets/hinata-moon.png" alt=""><svg id="hinata-water" viewBox="0 0 1672 941" preserveAspectRatio="none"><defs><filter id="lake-ripples" filterUnits="userSpaceOnUse" x="240" y="420" width="800" height="240"><feTurbulence type="fractalNoise" baseFrequency=".008 .065" numOctaves="1" seed="7" result="water-noise"/><feOffset in="water-noise" result="water-drift"><animate attributeName="dx" values="0;22;0" dur="24s" repeatCount="indefinite"/><animate attributeName="dy" values="0;5;0" dur="19s" repeatCount="indefinite"/></feOffset><feDisplacementMap in="SourceGraphic" in2="water-drift" scale="6" xChannelSelector="R" yChannelSelector="G"/></filter><clipPath id="lake-region"><path d="M280 442 Q630 443 1007 443 L918 592 Q665 654 281 608Z"/></clipPath></defs><g clip-path="url(#lake-region)"><image href="assets/hinata-moon.png" width="1672" height="941" filter="url(#lake-ripples)"/></g></svg><div class="moon-aura"></div><div class="moon-mist mist-back"></div><div class="moon-mist mist-front"></div><div id="hinata-fireflies"></div></div>
       <div id="sasuke-stage" aria-hidden="true"><img src="assets/sasuke-storm.png" alt=""><div class="storm-energy"></div><div id="chidori"><span></span><span></span><span></span></div><div class="storm-lightning"></div></div>
       <div id="sakura-stage" aria-hidden="true"><img src="assets/sakura-blossom.png" alt=""><div id="sakura-petals"></div><div class="healing-aura"></div></div>
+      <div id="kurama-stage" class="kurama-scene" aria-hidden="true"><img src="assets/kurama-moon.png" alt=""><canvas class="tail-mesh"></canvas><div class="kurama-moon-glow"></div><div class="kurama-fog fog-distant"></div><div class="kurama-fog fog-near"></div><div class="kurama-particles"></div></div>
+      <div id="chakra-stage" class="kurama-scene" aria-hidden="true"><img src="assets/chakra-sync.png" alt=""><canvas class="tail-mesh"></canvas><svg id="chakra-flames" viewBox="0 0 1672 941" preserveAspectRatio="none"></svg><div class="kurama-particles"></div></div>
       <img class="wallpaper" src="assets/itachi-rain.png" alt="Itachi in a moonlit forest">
       <svg id="eyes" viewBox="0 0 1672 941" preserveAspectRatio="none" aria-hidden="true">
         <defs>
@@ -80,6 +82,8 @@
   <script src="screensaver.js"></script>
   <script src="music-track.js"></script>
   <script src="ambient.js"></script>
+  <script src="kurama-scenes.js"></script>
+  <script src="backgrounds.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
