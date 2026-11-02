@@ -1,0 +1,177 @@
+{
+  "version": "0.9.2",
+  "checks": {
+    "collection": {
+      "defaults": [
+        "youtube.leanback.v4",
+        "netflix",
+        "amazon",
+        "hotstar",
+        "com.crunchyroll.webapp"
+      ],
+      "apps": [
+        "youtube.leanback.v4",
+        "netflix",
+        "amazon",
+        "hotstar",
+        "com.crunchyroll.webapp"
+      ],
+      "catalog": 17,
+      "themes": [
+        "rain",
+        "red",
+        "naruto",
+        "hinata",
+        "sasuke",
+        "sakura",
+        "kurama",
+        "chakra"
+      ],
+      "loaded": true
+    },
+    "navigation": {
+      "leftRight": true,
+      "footerBothDirections": true
+    },
+    "carousel": {
+      "count": 17,
+      "scroll": 2887,
+      "visible": true
+    },
+    "apps": {
+      "checkbox": true,
+      "lastAppGuard": true,
+      "restored": true
+    },
+    "eyes": {
+      "rain": {
+        "passed": true
+      },
+      "red": {
+        "passed": true
+      },
+      "naruto": {
+        "passed": true
+      },
+      "hinata": {
+        "passed": true
+      },
+      "sasuke": {
+        "passed": true
+      },
+      "sakura": {
+        "passed": true
+      },
+      "kurama": {
+        "passed": true
+      },
+      "chakra": {
+        "passed": true
+      }
+    },
+    "backgroundMotion": {
+      "rain": {
+        "running": true,
+        "effect": "moving-clouds"
+      },
+      "red": {
+        "running": true,
+        "effect": "rotating-sharingan"
+      },
+      "naruto": {
+        "running": true,
+        "effect": "moving-clouds"
+      },
+      "hinata": {
+        "running": true,
+        "effect": "moving-clouds"
+      },
+      "sasuke": {
+        "running": true,
+        "effect": "moving-clouds"
+      },
+      "sakura": {
+        "running": true,
+        "effect": "moving-clouds"
+      },
+      "kurama": {
+        "renderer": "webgl",
+        "running": true,
+        "effect": "tail-and-chakra-mesh"
+      },
+      "chakra": {
+        "renderer": "webgl",
+        "running": true,
+        "effect": "tail-and-chakra-mesh"
+      }
+    },
+    "staticItachi": {
+      "sameBounds": true,
+      "transform": "none",
+      "animations": 0
+    },
+    "crows": {
+      "count": 7,
+      "width": 119.031
+    },
+    "water": {
+      "moving": true,
+      "hiddenPause": true,
+      "returnResume": true,
+      "motionSwitch": true
+    },
+    "hinataScenery": {
+      "moon": true,
+      "trees": true,
+      "water": true
+    },
+    "powers": {
+      "naruto": true,
+      "hinata": true,
+      "sasuke": true,
+      "sakura": true,
+      "kurama": true,
+      "chakra": true
+    },
+    "rasengan": true,
+    "settings": {
+      "count": 7,
+      "labels": [
+        "themes",
+        "apps",
+        "ambientMusic",
+        "rotationMode",
+        "motion",
+        "hour12",
+        "close"
+      ],
+      "visible": true,
+      "hint": "↑ ↓ Choose setting · → / OK Change · ← / Back Close"
+    },
+    "soundtrack": {
+      "state": "playing",
+      "source": "assets/naruto-ambient.mp3",
+      "loop": true
+    },
+    "screenSaver": {
+      "state": "registered",
+      "enabled": true
+    },
+    "intro": {
+      "before": 0,
+      "after": 0,
+      "noReplay": true
+    },
+    "homeNote": {
+      "text": "Home: Sharingan · Hold Home: LG Home",
+      "settingPresent": false
+    },
+    "memory": {
+      "jsHeap": 10000000,
+      "dom": 951,
+      "temporaryPowers": 0
+    }
+  },
+  "runtimeErrors": [],
+  "passed": true
+}

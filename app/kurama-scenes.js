@@ -1,6 +1,23 @@
 'use strict';
 // One textured mesh per scene. Tail tips move; protected face regions stay fixed
 // so the independent SVG eyes remain registered to the original illustration.
+// Static influence weights replace nine Gaussian/tail calculations per vertex
+// per frame. Angle addition leaves only two wave uniforms for each draw.
+function tailSway(kind,x,y){
+  const smooth=(a,b,v)=>{const t=Math.max(0,Math.min(1,(v-a)/(b-a)));return t*t*(3-2*t);};
+  const ellipse=(cx,cy,rx,ry)=>1-smooth(.7,1.15,Math.hypot((x-cx)/rx,(y-cy)/ry));
+  const chakra=kind==='chakra',root=chakra?[.69,.47]:[.75,.48];
+  const protect=chakra?Math.max(ellipse(.538,.34,.14,.23),ellipse(.755,.33,.115,.22)):Math.max(ellipse(.791,.29,.17,.29),ellipse(.9,.42,.07,.30),ellipse(.8,.56,.16,.23));
+  const mask=smooth(.01,.08,y)*(1-smooth(.74,.85,y))*smooth(.25,.36,x)*(1-protect),weights=[0,0,0,0];
+  const tips=[[.37,.065,.083],[.29,.23,.075],[.30,.39,.075],[.39,.56,.070],[.28,.72,.068],[.61,-.16,.080],[.82,-.18,.085],[1.04,.065,.080],[1.08,.35,.070]];
+  tips.forEach(([tx,ty,r],i)=>{const lx=(tx-root[0])*1.7778,ly=ty-root[1],px=(x-root[0])*1.7778,py=y-root[1],t=Math.max(0,Math.min(1,(px*lx+py*ly)/(lx*lx+ly*ly))),d=Math.hypot(px-lx*t,py-ly*t),w=Math.exp(-d*d/(r*r))*smooth(.16,.90,t)*mask,phase=i*.8;weights[0]+=w*Math.cos(phase);weights[1]+=w*Math.sin(phase);weights[2]+=w*Math.cos(phase+.8);weights[3]+=w*Math.sin(phase+.8);});
+  return weights;
+}
+function chakraGlowMask(x,y){
+  const smooth=(a,b,v)=>{const t=Math.max(0,Math.min(1,(v-a)/(b-a)));return t*t*(3-2*t);};
+  const face=Math.max(1-smooth(.7,1.15,Math.hypot((x-.538)/.14,(y-.34)/.23)),1-smooth(.7,1.15,Math.hypot((x-.755)/.115,(y-.33)/.22)));
+  return (1-face)*smooth(.28,.4,x)*(1-smooth(.9,1,y));
+}
 class KuramaScene {
   constructor(stage,kind){
     this.stage=stage;this.kind=kind;this.canvas=stage.querySelector('canvas');
@@ -17,67 +34,36 @@ class KuramaScene {
     this.gl=gl;
     const vertex=`
       precision highp float;
-      attribute vec2 point; varying vec2 uv; uniform float time; uniform float chakra;
-      float ellipse(vec2 p,vec2 c,vec2 r){return 1.-smoothstep(.7,1.15,length((p-c)/r));}
-      float protect(vec2 p){
-        if(chakra>.5)return max(ellipse(p,vec2(.538,.34),vec2(.14,.23)),ellipse(p,vec2(.755,.33),vec2(.115,.22)));
-        return max(max(ellipse(p,vec2(.791,.29),vec2(.17,.29)),ellipse(p,vec2(.9,.42),vec2(.07,.30))),ellipse(p,vec2(.8,.56),vec2(.16,.23)));
-      }
-      vec2 tail(vec2 p,vec2 root,vec2 tip,float radius,float phase){
-        vec2 aspect=vec2(1.7778,1.);vec2 line=(tip-root)*aspect;
-        float t=clamp(dot((p-root)*aspect,line)/dot(line,line),0.,1.);
-        float d=length(((p-root)*aspect)-line*t);
-        float w=exp(-d*d/(radius*radius))*smoothstep(.16,.90,t);
-        float speed=mix(.31,.65,chakra);
-        return w*vec2(sin(time*speed+phase)*.0045, sin(time*speed+phase+.8)*.014);
-      }
+      attribute vec2 point;attribute vec4 sway;attribute float glowMask;varying vec2 uv;varying float energy;
+      uniform float time;uniform float chakra;uniform vec2 wave;
       void main(){
-        uv=point;vec2 p=point;vec2 root=mix(vec2(.75,.48),vec2(.69,.47),chakra);vec2 delta=vec2(0.);
-        delta+=tail(p,root,vec2(.37,.065),.083,0.);
-        delta+=tail(p,root,vec2(.29,.23),.075,.8);
-        delta+=tail(p,root,vec2(.30,.39),.075,1.6);
-        delta+=tail(p,root,vec2(.39,.56),.070,2.4);
-        delta+=tail(p,root,vec2(.28,.72),.068,3.2);
-        delta+=tail(p,root,vec2(.61,-.16),.080,4.);
-        delta+=tail(p,root,vec2(.82,-.18),.085,4.8);
-        delta+=tail(p,root,vec2(1.04,.065),.080,5.6);
-        delta+=tail(p,root,vec2(1.08,.35),.070,6.4);
-        float margin=smoothstep(.01,.08,p.y)*(1.-smoothstep(.74,.85,p.y))*smoothstep(.25,.36,p.x);
-        delta*=margin*(1.-protect(p));
-        // Water moves horizontally below the village, never across either face.
+        uv=point;energy=glowMask;vec2 p=point;
+        vec2 delta=vec2(dot(sway.xy,wave)*.0045,dot(sway.zw,wave)*.014);
         float water=chakra*(1.-smoothstep(.52,.64,p.x))*smoothstep(.61,.65,p.y)*(1.-smoothstep(.75,.80,p.y));
         delta.x+=sin(p.y*160.-time*.9)*.0008*water;
         gl_Position=vec4((p.x+delta.x)*2.-1.,1.-(p.y+delta.y)*2.,0.,1.);
       }`;
-    const fragment=`
-      precision highp float;varying vec2 uv;uniform sampler2D art;uniform float time;uniform float chakra;
-      float ellipse(vec2 p,vec2 c,vec2 r){return 1.-smoothstep(.7,1.15,length((p-c)/r));}
-      void main(){
-        vec4 original=texture2D(art,uv);float face=max(ellipse(uv,vec2(.538,.34),vec2(.14,.23)),ellipse(uv,vec2(.755,.33),vec2(.115,.22)));
-        float warm=smoothstep(.12,.45,original.r-original.b)*smoothstep(.22,.60,original.r);
-        float mask=chakra*warm*(1.-face)*smoothstep(.28,.4,uv.x)*(1.-smoothstep(.9,1.,uv.y));
-        float flow=sin(uv.y*115.-time*2.5+sin(uv.x*80.+time*.9));
-        vec2 offset=vec2(sin(uv.y*80.-time*2.)*.0009,flow*.0015)*mask;
-        vec4 color=texture2D(art,uv+offset);
-        float rim=length(original.rgb-texture2D(art,uv+vec2(.0018,.0018)).rgb);
-        color.rgb+=vec3(1.,.47,.06)*mask*min(rim*2.5,.5)*(.035+.035*sin(time*2.2+uv.y*70.));
-        gl_FragColor=color;
-      }`;
+    const fragment=this.kind==='kurama'?`precision highp float;varying vec2 uv;uniform sampler2D art;void main(){gl_FragColor=texture2D(art,uv);}`:`
+      precision highp float;varying vec2 uv;varying float energy;uniform sampler2D art;uniform float pulse;
+      void main(){vec4 color=texture2D(art,uv);float warm=smoothstep(.12,.45,color.r-color.b)*smoothstep(.22,.60,color.r);color.rgb+=vec3(1.,.47,.06)*energy*warm*pulse;gl_FragColor=color;}`;
     const compile=(type,source)=>{const s=gl.createShader(type);gl.shaderSource(s,source);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw Error(gl.getShaderInfoLog(s));return s;};
     try{
       this.program=gl.createProgram();const vs=compile(gl.VERTEX_SHADER,vertex),fs=compile(gl.FRAGMENT_SHADER,fragment);
       gl.attachShader(this.program,vs);gl.attachShader(this.program,fs);gl.linkProgram(this.program);
       gl.deleteShader(vs);gl.deleteShader(fs);
       if(!gl.getProgramParameter(this.program,gl.LINK_STATUS))throw Error(gl.getProgramInfoLog(this.program));
-      gl.useProgram(this.program);const vertices=[],nx=80,ny=45;
-      for(let y=0;y<ny;y++)for(let x=0;x<nx;x++)for(const [dx,dy] of [[0,0],[1,0],[0,1],[0,1],[1,0],[1,1]])vertices.push((x+dx)/nx,(y+dy)/ny);
-      this.count=vertices.length/2;const buffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(vertices),gl.STATIC_DRAW);
-      const attribute=gl.getAttribLocation(this.program,'point');gl.enableVertexAttribArray(attribute);gl.vertexAttribPointer(attribute,2,gl.FLOAT,false,0,0);
+      gl.useProgram(this.program);const vertices=[],indices=[],nx=48,ny=27;
+      for(let y=0;y<=ny;y++)for(let x=0;x<=nx;x++)vertices.push(x/nx,y/ny,...tailSway(this.kind,x/nx,y/ny),chakraGlowMask(x/nx,y/ny));
+      for(let y=0;y<ny;y++)for(let x=0;x<nx;x++){const i=y*(nx+1)+x;indices.push(i,i+1,i+nx+1,i+nx+1,i+1,i+nx+2);}
+      this.count=indices.length;
+      const buffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(vertices),gl.STATIC_DRAW);
+      for(const [name,size,offset] of [['point',2,0],['sway',4,8],['glowMask',1,24]]){const attribute=gl.getAttribLocation(this.program,name);if(attribute>=0){gl.enableVertexAttribArray(attribute);gl.vertexAttribPointer(attribute,size,gl.FLOAT,false,28,offset);}}
+      const indexBuffer=gl.createBuffer();gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,indexBuffer);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,new Uint16Array(indices),gl.STATIC_DRAW);
       const texture=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,texture);gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,false);
       gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
       gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
       gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,this.image);
-      this.time=gl.getUniformLocation(this.program,'time');gl.uniform1f(gl.getUniformLocation(this.program,'chakra'),this.kind==='chakra'?1:0);
+      this.time=gl.getUniformLocation(this.program,'time');this.wave=gl.getUniformLocation(this.program,'wave');this.pulse=gl.getUniformLocation(this.program,'pulse');gl.uniform1f(gl.getUniformLocation(this.program,'chakra'),this.kind==='chakra'?1:0);
       this.ready=true;this.canvas.dataset.renderer='webgl';this.stage.classList.add('mesh-ready');this.draw(this.elapsed);
       if(this.active)this.schedule();
     }catch(error){this.makeFallback();console.warn('[Sharingan] Using SVG scene animation:',error.message);}
@@ -96,16 +82,17 @@ class KuramaScene {
   }
   draw(seconds){
     if(!this.ready)return;
-    const width=Math.min(1920,Math.round(innerWidth*Math.min(window.devicePixelRatio||1,2))),height=Math.round(width*innerHeight/innerWidth);
+    const width=Math.min(1280,Math.round(innerWidth)),height=Math.round(width*innerHeight/innerWidth);
     if(this.canvas.width!==width||this.canvas.height!==height){this.canvas.width=width;this.canvas.height=height;this.gl.viewport(0,0,width,height);}
-    this.gl.uniform1f(this.time,seconds);this.gl.drawArrays(this.gl.TRIANGLES,0,this.count);
+    this.gl.uniform1f(this.time,seconds);const phase=seconds*(this.kind==='chakra'?.65:.31);this.gl.uniform2f(this.wave,Math.sin(phase),Math.cos(phase));this.gl.uniform1f(this.pulse,.018+.012*Math.sin(seconds*2.2));this.gl.drawElements(this.gl.TRIANGLES,this.count,this.gl.UNSIGNED_SHORT,0);
     this.canvas.dataset.frame=String(++this.frames);
   }
   schedule(){
     if(this.frame||!this.active||!this.ready)return;
     this.frame=requestAnimationFrame(now=>{this.frame=0;if(!this.active)return;
-      if(!this.last)this.last=now;
-      if(now-this.last>=1000/30){this.elapsed+=Math.min(.1,(now-this.last)/1000);this.last=now;this.draw(this.elapsed);}
+      if(!this.last){this.last=now;this.started=now;this.elapsedBase=this.elapsed;}
+      const interval=1000/15,delta=now-this.last;
+      if(delta>=interval){this.elapsed=(now-this.started)/1000+this.elapsedBase;this.last=now-delta%interval;this.draw(this.elapsed);}
       this.schedule();
     });
   }
@@ -122,23 +109,22 @@ class DashboardKuramaScenes {
     this.scenes=new Map(['kurama','chakra'].map(id=>[id,new KuramaScene(document.getElementById(id+'-stage'),id)]));
     for(const item of this.scenes.values()){
       item.image.addEventListener('load',()=>{if(item.active)item.init();});
-      for(let i=0;i<24;i++){
+      for(let i=0;i<12;i++){
         const spark=document.createElement('span');spark.className='fox-ember';
         spark.style.cssText='left:'+(25+(i*31)%74)+'%;top:'+(25+(i*19)%60)+'%;--drift:'+((i%5-2)*1.2)+'vw;animation-delay:'+(-i*.63)+'s;animation-duration:'+(8+i%7)+'s;';
         item.stage.querySelector('.kurama-particles').appendChild(spark);
       }
     }
     const flames=document.getElementById('chakra-flames');
-    flames.innerHTML='<defs><linearGradient id="chakra-lick-fill" x1="0" y1="1" x2="0" y2="0"><stop stop-color="#ff8a19" stop-opacity=".02"/><stop offset=".55" stop-color="#ffbf43" stop-opacity=".4"/><stop offset="1" stop-color="#ffe7a2" stop-opacity=".05"/></linearGradient></defs>';
     // Measured points on the outer chakra contours, away from skin and eyes.
     const anchors=[[514,229,35],[504,337,40],[555,408,30],[625,113,48],[678,49,30],[945,82,43],[1438,103,38],[1514,198,43],[1606,259,48],[1578,376,39],[1453,413,32],[1510,509,40],[1562,614,39],[929,728,42],[990,626,38],[1037,543,34],[1145,233,29],[1349,197,26],[1401,263,34]];
     anchors.forEach(([x,y,h],i)=>{
-      const flame=document.createElementNS('http://www.w3.org/2000/svg','path');flame.classList.add('chakra-lick');
-      flame.setAttribute('d','M'+(x-7)+' '+y+' Q'+(x-14)+' '+(y-h*.5)+' '+x+' '+(y-h)+' Q'+(x-3)+' '+(y-h*.48)+' '+(x+8)+' '+(y-h*.30)+' Q'+(x+13)+' '+(y-h*.15)+' '+(x+6)+' '+y+'Z');
-      flame.style.animationDelay=(-i*.29)+'s';flame.style.animationDuration=(1.8+i%5*.27)+'s';flames.appendChild(flame);
+      if(i%3!==0)return; // Seven flame layers keep the TV compositor responsive.
+      const flame=document.createElement('span');flame.classList.add('chakra-lick');
+      flame.style.cssText='left:'+((x-12)/1672*100)+'%;top:'+((y-h)/941*100)+'%;height:'+(h/941*100)+'%;animation-delay:'+(-i*.29)+'s;animation-duration:'+(1.8+i%5*.27)+'s;';flames.appendChild(flame);
     });
   }
   sync(theme,motion,visible){for(const [id,item] of this.scenes)item.sync(visible&&theme===id,motion);}
   stop(){for(const item of this.scenes.values())item.stop();}
 }
-if(typeof module!=='undefined')module.exports={KuramaScene,DashboardKuramaScenes};
+if(typeof module!=='undefined')module.exports={KuramaScene,DashboardKuramaScenes,tailSway};

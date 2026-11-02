@@ -1,6 +1,6 @@
 # Home shortcut — read-only observer
 
-Dashboard 0.9.1 and native helper 0.4.0, on LG 55NU870BPLA / firmware 43.21.87 / SDK 11.2.0.
+Dashboard 0.9.2 and native helper 0.4.0, on LG 55NU870BPLA / firmware 43.21.87 / SDK 11.2.0.
 
 ## Behavior
 

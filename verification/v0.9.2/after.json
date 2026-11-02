@@ -1,0 +1,84 @@
+{
+  "rain": {
+    "callbacks": 172,
+    "p50": 16.700000000000728,
+    "p95": 50,
+    "over50ms": 7,
+    "visibility": "visible",
+    "mesh": [
+      {
+        "width": 300,
+        "height": 150,
+        "running": "false"
+      },
+      {
+        "width": 300,
+        "height": 150,
+        "running": "false"
+      }
+    ]
+  },
+  "hinata": {
+    "callbacks": 140,
+    "p50": 33.29999999999927,
+    "p95": 50,
+    "over50ms": 3,
+    "visibility": "visible",
+    "mesh": [
+      {
+        "width": 300,
+        "height": 150,
+        "running": "false"
+      },
+      {
+        "width": 300,
+        "height": 150,
+        "running": "false"
+      }
+    ]
+  },
+  "kurama": {
+    "callbacks": 191,
+    "p50": 16.69999999999709,
+    "p95": 33.400000000001455,
+    "over50ms": 4,
+    "visibility": "visible",
+    "mesh": [
+      {
+        "renderer": "webgl",
+        "width": 1280,
+        "height": 720,
+        "frames": "59",
+        "running": "true"
+      },
+      {
+        "width": 300,
+        "height": 150,
+        "running": "false"
+      }
+    ]
+  },
+  "chakra": {
+    "callbacks": 154,
+    "p50": 16.799999999995634,
+    "p95": 50,
+    "over50ms": 5,
+    "visibility": "visible",
+    "mesh": [
+      {
+        "renderer": "webgl",
+        "width": 1280,
+        "height": 720,
+        "frames": "60",
+        "running": "false"
+      },
+      {
+        "renderer": "webgl",
+        "width": 1280,
+        "height": 720,
+        "frames": "59",
+        "running": "true"
+      }
+    ]
+  }
+}
