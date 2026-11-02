@@ -1,0 +1,22 @@
+{
+  "version": "0.9.1",
+  "device": "LG 55NU870BPLA",
+  "installed": true,
+  "launched": true,
+  "installedBackgroundSourceMatches": true,
+  "backgroundsSha256": "e59f47039e8b74ac90099c5731bb51d081b26ae8bec0aa847b5d9a33ef9782ab",
+  "targetedHinataChecks": {
+    "documentVisibility": "visible",
+    "moonRunning": true,
+    "moonElapsedMs": 11766.13,
+    "foliageTimeBefore": 17.016,
+    "foliageTimeAfter": 34.648,
+    "waterTimeBefore": 17.016,
+    "waterTimeAfter": 34.648,
+    "motionOffPausesAll": true,
+    "hiddenPausesAll": true,
+    "resumed": true
+  },
+  "fullReviewComplete": false,
+  "fullReviewLimitation": "Inspector timeout; earlier run also exceeded fixed crow-cleanup timing."
+}
