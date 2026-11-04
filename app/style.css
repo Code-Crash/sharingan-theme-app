@@ -233,3 +233,10 @@ footer nav{display:flex;align-items:center;gap:1.2vw}
 
 #spotlight{left:0;transition:transform .35s cubic-bezier(.2,.8,.2,1);will-change:transform}
 .chakra-lick{position:absolute;display:block;width:1.5%;background:linear-gradient(0deg,#ff8a1905,#ffbf4366 55%,#ffe7a20d);clip-path:polygon(50% 0,62% 42%,100% 72%,76% 100%,20% 100%,0 65%,38% 36%);transform-origin:50% 100%;will-change:transform,opacity}
+
+/* One opacity layer dims the dashboard without filtering the animated scene. */
+#brightness-dimmer{position:absolute;inset:0;z-index:9;background:#000;opacity:0;pointer-events:none;transition:opacity .12s linear}
+#panel{padding-top:6vh;padding-bottom:4vh}
+#panel .description{margin-bottom:3vh}
+#panel button{padding-top:1.8vh;padding-bottom:1.8vh}
+#panel .note{margin-top:2vh;line-height:1.7}

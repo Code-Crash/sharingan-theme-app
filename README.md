@@ -44,6 +44,7 @@ Open [the local preview](http://127.0.0.1:8765/preview.html). Click inside the d
 - Eight themes: Itachi Rain, Itachi Crimson Moon, Naruto Golden Hour, Hinata, Sasuke, Sakura, Kurama, and Naruto Chakra Sync.
 - Eye tracking, blinking, animated backgrounds, and character effects toward the selected app.
 - App checkboxes, saved preferences, and background rotation every 30 or 60 seconds.
+- Saved dashboard brightness (20–100%); Left/Right adjusts it in Settings.
 - Optional looping local music; volume follows the TV remote.
 
 On LG: **Left/Right** selects an app, **OK** opens it, **Down** reaches Themes/Settings, and **Back** closes panels. Default apps are YouTube, Netflix, Prime Video, JioHotstar, and Crunchyroll; availability depends on your TV and region.
@@ -54,6 +55,6 @@ On LG: **Left/Right** selects an app, **OK** opens it, **Down** reaches Themes/S
 - [Experimental LG Home helper](home-helper/README.md)
 - [Before publishing a public fork or release](docs/PUBLIC_RELEASE.md)
 
-Current dashboard version: **0.9.2**. [On-TV verification and performance results](verification/v0.9.2/REVIEW.md).
+Current dashboard version: **0.9.3**. [Current on-TV verification](verification/v0.9.3/REVIEW.md) · [Performance results](verification/v0.9.2/REVIEW.md).
 
 Source licensing and bundled-media redistribution rights still need to be resolved before a public release; see the publication notes above. This project is not affiliated with LG, Google, Sony, or the Naruto rights holders.

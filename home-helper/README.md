@@ -1,6 +1,6 @@
 # Home shortcut — read-only observer
 
-Dashboard 0.9.2 and native helper 0.4.0, on LG 55NU870BPLA / firmware 43.21.87 / SDK 11.2.0.
+Dashboard 0.9.3 and native helper 0.4.0, on LG 55NU870BPLA / firmware 43.21.87 / SDK 11.2.0.
 
 ## Behavior
 
@@ -50,7 +50,7 @@ Requires Zig 0.14.1, Node, Python 3 and the official webOS CLI. Numeric identiti
 
 ```sh
 ZIG=/path/to/zig node home-helper/build.mjs
-npm exec --yes --package=@webos-tools/cli -- ares-install -d lg-tv dist/home-helper/com.dextor.sharingan_0.9.2_all.ipk
+npm exec --yes --package=@webos-tools/cli -- ares-install -d lg-tv dist/home-helper/com.dextor.sharingan_0.9.3_all.ipk
 npm exec --yes --package=@webos-tools/cli -- ares-install -d lg-tv dist/home-helper/com.mbs.communityhomehelper_0.4.0_arm.ipk
 ```
 

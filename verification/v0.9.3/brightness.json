@@ -1,0 +1,35 @@
+{
+  "version": "0.9.3",
+  "checks": {
+    "left": {
+      "value": 90,
+      "opacity": 0.1,
+      "panelOpen": true
+    },
+    "minimum": {
+      "value": 20,
+      "opacity": 0.8,
+      "settingsAboveDimmer": true,
+      "clickThrough": true
+    },
+    "controls": {
+      "right": true,
+      "ok": true,
+      "bounds": true,
+      "themeChange": true,
+      "panelReopen": true
+    },
+    "layout": {
+      "count": 8,
+      "visible": true,
+      "saved": 60
+    },
+    "reload": {
+      "value": 60,
+      "opacity": 0.4,
+      "label": "60%"
+    }
+  },
+  "runtimeErrors": [],
+  "passed": true
+}

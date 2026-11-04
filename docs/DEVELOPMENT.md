@@ -16,7 +16,7 @@
 | `app/appinfo.json` | webOS application metadata; current ID `com.dextor.sharingan` |
 | `preview.html` | Local preview with Kurama and Chakra switch buttons |
 | `home-helper/` | Experimental device-specific LG Home observer and service |
-| `verification/` | Historical checks; current LG results are in `v0.9.2/` |
+| `verification/` | Historical checks; current LG results are in `v0.9.3/`; performance comparisons are in `v0.9.2/` |
 
 ## Local workflow
 
@@ -82,9 +82,10 @@ For a paired LG TV, launch the dashboard and start `ares-inspect --device my-tv 
 
 ```sh
 REVIEW_SCREENSHOTS=0 node review-tv.mjs http://127.0.0.1:PORT verification/my-model
+node review-brightness.mjs http://127.0.0.1:PORT verification/my-model
 node profile-tv.mjs http://127.0.0.1:PORT verification/my-model/timing.json
 ```
 
-The first command’s environment-variable syntax is for POSIX shells; on Windows PowerShell, set `$env:REVIEW_SCREENSHOTS='0'` before running `node review-tv.mjs ...`. The review and profiler temporarily modify dashboard preferences and restore saved options afterward. The review dispatches key events; separately confirm real remote and streaming-app behavior. Timing samples measure animation callbacks, not displayed-frame FPS.
+The first command’s environment-variable syntax is for POSIX shells; on Windows PowerShell, set `$env:REVIEW_SCREENSHOTS='0'` before running `node review-tv.mjs ...`. The brightness check reloads the app to verify saved settings. The reviews and profiler temporarily modify dashboard preferences and restore saved options afterward. The review dispatches key events; separately confirm real remote and streaming-app behavior. Timing samples measure animation callbacks, not displayed-frame FPS.
 
-Record exact model/firmware, changed settings, passing checks and remaining limitations. Keep screenshots, device inventories, credentials and runtime helper state out of commits. See [the current LG review](../verification/v0.9.2/REVIEW.md) for evidence and performance comparisons.
+Record exact model/firmware, changed settings, passing checks and remaining limitations. Keep screenshots, device inventories, credentials and runtime helper state out of commits. See [the current LG review](../verification/v0.9.3/REVIEW.md) for evidence and [the performance review](../verification/v0.9.2/REVIEW.md) for timing comparisons.

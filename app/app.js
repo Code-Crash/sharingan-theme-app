@@ -23,7 +23,7 @@ const THEMES=[
   {id:'kurama',name:'Kurama · Nine-Tails Moon',detail:'Slow tail sway · embers & fox chakra',image:'kurama-moon.png'},
   {id:'chakra',name:'Naruto · Chakra Sync',detail:'Living chakra flames · golden Rasengan',image:'chakra-sync.png'}
 ];
-const options=Object.assign({motion:true,blink:true,hour12:false,theme:'rain',autoTheme:true,themeIntervalSeconds:60,keepVisible:true,ambientMusic:true},preferences);
+const options=Object.assign({motion:true,blink:true,hour12:false,theme:'rain',autoTheme:true,themeIntervalSeconds:60,keepVisible:true,ambientMusic:true,brightness:100},preferences);
 if(options.themeRotationVersion!==1){options.autoTheme=true;options.themeIntervalSeconds=60;options.themeRotationVersion=1;}
 if(![30,60].includes(options.themeIntervalSeconds))options.themeIntervalSeconds=60;
 options.keepVisible=true;
@@ -248,13 +248,25 @@ function updateClock(){
 function blink(){if(options.blink&&options.motion&&!document.hidden){scene.classList.remove('blinking');void scene.offsetWidth;scene.classList.add('blinking');}clearTimeout(blinkTimer);blinkTimer=setTimeout(blink,4000+Math.random()*6000);}
 function finishIntro(){clearTimeout(introTimer);document.getElementById('intro').classList.add('done');}
 function intro(){if(startupParams.homeShortcut===true||previewTheme){introHasPlayed=true;finishIntro();return;}if(introHasPlayed){finishIntro();return;}introHasPlayed=true;record('intro-shown');clearTimeout(introTimer);const el=document.getElementById('intro');if(!options.motion){el.classList.add('done');return;}el.classList.remove('done');const svg=el.querySelector('svg');svg.style.animation='none';void svg.getBoundingClientRect();svg.style.animation='';introTimer=setTimeout(()=>el.classList.add('done'),1000);}
+function savePreferences(){try{localStorage.setItem('sharingan.preferences',JSON.stringify(options));}catch(_){} }
+function applyBrightness(){
+  const value=options.brightness;
+  options.brightness=typeof value==='number'&&Number.isFinite(value)?Math.max(20,Math.min(100,Math.round(value/10)*10)):100;
+  document.getElementById('brightness-dimmer').style.opacity=String(1-options.brightness/100);
+  document.getElementById('brightness-value').textContent=options.brightness+'%';
+  document.querySelector('[data-setting="brightness"]').setAttribute('aria-label','Dashboard brightness '+options.brightness+' percent. Left and Right adjust; OK cycles.');
+}
+function changeBrightness(direction){
+  options.brightness=direction===0?(options.brightness<=20?100:options.brightness-10):Math.max(20,Math.min(100,options.brightness+direction*10));
+  applyBrightness();savePreferences();
+}
 function applyOptions(){
   scene.classList.toggle('still',!options.motion);scene.dataset.theme=options.theme;
   kuramaScenes.sync(options.theme,options.motion,!document.hidden&&!scene.classList.contains('backgrounded'));
   ['motion','hour12','ambientMusic'].forEach(key=>document.getElementById(key+'-value').textContent=options[key]?'On':'Off');
   document.getElementById('rotationMode-value').textContent=options.autoTheme?(options.themeIntervalSeconds===30?'30 seconds':'1 minute'):'Off';
   if(!window.DASHBOARD_MUSIC.src)document.getElementById('ambientMusic-value').textContent='No track';
-  try{localStorage.setItem('sharingan.preferences',JSON.stringify(options));}catch(_){}
+  applyBrightness();savePreferences();
   document.querySelectorAll('.theme-card').forEach(card=>{const active=card.dataset.theme===options.theme;card.setAttribute('aria-pressed',String(active));card.querySelector('.theme-active').hidden=!active;});
   for(const theme of THEMES){const stage=document.getElementById(theme.id+'-stage');if(stage)stage.classList.toggle('theme-inactive',theme.id!==options.theme);}
   if(!options.motion||document.hidden||scene.classList.contains('backgrounded')){
@@ -266,12 +278,13 @@ function applyOptions(){
 }
 function openPanel(){if(busy)return;panel.hidden=false;panelIndex=0;panelButtons[0].focus();refreshHomeState();updateHint();}
 function closePanel(){panel.hidden=true;clearTimeout(homeStateTimer);select(selected,true);updateHint();}
-panelButtons.forEach((button,index)=>{button.addEventListener('focus',()=>panelIndex=index);button.addEventListener('click',async()=>{
+panelButtons.forEach((button,index)=>{button.addEventListener('focus',()=>{panelIndex=index;updateHint();});button.addEventListener('click',async()=>{
   const key=button.dataset.setting;
   if(key==='close')closePanel();
   else if(key==='themes')openThemes('settings');
   else if(key==='apps')openApps();
   else if(key==='ambientMusic'&&!window.DASHBOARD_MUSIC.src)toast('Add your Naruto soundtrack first.');
+  else if(key==='brightness')changeBrightness(0);
   else if(key==='rotationMode'){if(!options.autoTheme){options.autoTheme=true;options.themeIntervalSeconds=30;}else if(options.themeIntervalSeconds===30)options.themeIntervalSeconds=60;else options.autoTheme=false;lastThemeChange=Date.now();applyOptions();}
   else{options[key]=!options[key];applyOptions();}
 });});
@@ -287,7 +300,7 @@ function refreshHomeState(){
   });return homeStatePending;
 }
 function updateHint(){
-  document.getElementById('hint').textContent=!appPanel.hidden?'Arrows Choose apps · OK Show / Hide · Back Done':!themePanel.hidden?'Arrows Choose theme · OK Apply · Back Close':!panel.hidden?'↑ ↓ Choose setting · → / OK Change · ← / Back Close':'← → Choose an app · OK Open';
+  document.getElementById('hint').textContent=!appPanel.hidden?'Arrows Choose apps · OK Show / Hide · Back Done':!themePanel.hidden?'Arrows Choose theme · OK Apply · Back Close':!panel.hidden?(document.activeElement?.dataset.setting==='brightness'?'← → Brightness · OK Cycle · Back Close':'↑ ↓ Choose setting · → / OK Change · ← / Back Close'):'← → Choose an app · OK Open';
 }
 function syncDashboardVisibility(visible){
   scene.classList.toggle('backgrounded',!visible);
@@ -352,7 +365,7 @@ document.addEventListener('keydown',event=>{
   if(busy)return;
   if(!appPanel.hidden){if([37,38,39,40].includes(key)){if(document.activeElement===document.getElementById('apps-close'))appIndex=0;else appIndex=Math.max(0,Math.min(CATALOG.length-1,appIndex+({37:-1,39:1,38:-2,40:2}[key])));appCheckboxes[appIndex].focus();appCheckboxes[appIndex].scrollIntoView({block:'nearest'});}else if(key===13)document.activeElement.click();else if(key===461||key===27)closeApps();return;}
   if(!themePanel.hidden){if([37,38,39,40].includes(key)){if(document.activeElement===document.getElementById('themes-close'))themeIndex=0;else themeIndex=Math.max(0,Math.min(THEMES.length-1,themeIndex+({37:-1,39:1,38:-2,40:2}[key])));themeCards[themeIndex].focus();}else if(key===13)document.activeElement.click();else if(key===461||key===27)closeThemes();return;}
-  if(!panel.hidden){if(key===38||key===40){panelIndex=(panelIndex+(key===40?1:-1)+panelButtons.length)%panelButtons.length;panelButtons[panelIndex].focus();}else if(key===13||key===39)document.activeElement.click();else if(key===37||key===461||key===27)closePanel();return;}
+  if(!panel.hidden){if(document.activeElement?.dataset.setting==='brightness'&&(key===37||key===39)){changeBrightness(key===39?1:-1);}else if(key===38||key===40){panelIndex=(panelIndex+(key===40?1:-1)+panelButtons.length)%panelButtons.length;panelButtons[panelIndex].focus();}else if(key===13||key===39)document.activeElement.click();else if(key===37||key===461||key===27)closePanel();return;}
   const cornerIndex=cornerButtons.indexOf(document.activeElement);
   if((key===37||key===39)&&cornerIndex>=0)cornerButtons[(cornerIndex+(key===39?1:-1)+cornerButtons.length)%cornerButtons.length].focus();
   else if(key===37||key===39)select(selected+(key===39?1:-1),true);

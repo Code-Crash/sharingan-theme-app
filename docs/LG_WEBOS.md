@@ -2,7 +2,7 @@
 
 [← README](../README.md) · [Development](DEVELOPMENT.md)
 
-**Status:** dashboard 0.9.2 tested on LG **55NU870BPLA**, firmware **43.21.87**, SDK **11.2.0**. Other LG webOS models need individual testing. This guide installs a normal dashboard app first.
+**Status:** dashboard 0.9.3 tested on LG **55NU870BPLA**, firmware **43.21.87**, SDK **11.2.0**. Other LG webOS models need individual testing. This guide installs a normal dashboard app first.
 
 ## 1. Prepare your TV and computer
 
@@ -56,7 +56,7 @@ node home-helper/test-ambient.cjs
 node home-helper/test-screensaver.cjs
 mkdir -p dist
 ares-package --no-minify app --outdir dist
-ares-install --device my-tv dist/com.dextor.sharingan_0.9.2_all.ipk
+ares-install --device my-tv dist/com.dextor.sharingan_0.9.3_all.ipk
 ares-launch --device my-tv com.dextor.sharingan
 ```
 
@@ -67,6 +67,7 @@ The stock Home button continues to belong to LG. Without the optional helper/ser
 ## 4. Configure and check your TV
 
 - In **Settings → Apps on home screen**, tick the apps you want. The catalog is a snapshot from the tested TV, not universal app discovery. Update `app/catalog.js` and the defaults in `app/app.js` for your region/model.
+- **Settings → Dashboard brightness:** Left/Right adjusts 20–100%, OK cycles, Back closes Settings. It saves across reopening and dims only Sharingan, not other apps or the TV picture settings.
 - Test arrows, OK, Back, theme changes, and opening each enabled streaming app. Return using LG Home and reopen Sharingan.
 - Leave it idle longer than the TV’s screensaver interval. The app-scoped screensaver negotiation is firmware-dependent.
 - Test music pausing when another app opens, and resuming on return. For a fork, use audio you can distribute; see [media configuration](DEVELOPMENT.md#music-and-media).
