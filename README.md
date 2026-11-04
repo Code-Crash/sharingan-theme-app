@@ -1,87 +1,59 @@
 # Sharingan Theme App
 
-Private source repository: `code-crash/sharingan-theme-app`. An animated Naruto-themed app dashboard for LG webOS TVs.
+An animated, remote-controlled TV dashboard with Naruto-inspired themes, tracking eyes, character powers, selectable apps, and optional offline music. Built with HTML, CSS, JavaScript, and WebGL.
 
-Personal dashboard for LG 55NU870BPLA, app ID `com.dextor.sharingan`, version 0.9.2. Runs locally on the TV without root, a background computer, or remote artwork downloads. An optional Home-button helper is installed for device testing; see [Home helper](home-helper/README.md).
+## Choose your TV
 
-## Use
+| Platform | Status | Setup and AI prompt |
+| --- | --- | --- |
+| **LG webOS** | Working implementation; tested on **LG 55NU870BPLA**, firmware 43.21.87, webOS SDK 11.2.0 | [LG setup guide](docs/LG_WEBOS.md) |
+| **Google TV / Android TV** — Sony BRAVIA and other brands | **Port required.** No Android project or APK is included yet. | [Google TV setup and porting guide](docs/GOOGLE_TV.md) |
 
-- Left/right selects apps; OK opens the selected app with its theme’s power.
-- Down focuses Themes in the bottom right. Left/right switches to the gear.
-- Yellow opens Themes; Blue opens Settings where the remote has those keys.
-- Arrows navigate panels; OK applies or toggles; Back closes a panel.
-- Settings → Apps on home screen has a checkbox list of 17 user-facing apps. At least one remains enabled. More than six use a scrolling app row.
+Both guides include a prompt you can paste into **Codex or Claude Code** after opening this repository. Other TV models need their own compatibility checks.
 
-The default row is YouTube, Netflix, Prime Video, JioHotstar, and Crunchyroll, in that order. Other apps start unchecked. Changes save across reopening and theme changes. This five-app default migrates once; subsequent checkbox edits are retained.
+## LG webOS: what you need to do
 
-## Eight themes
+1. Install LG’s Developer Mode app, sign in, and enable Developer Mode.
+2. Install the webOS CLI on your computer, pair your TV, and verify the connection.
+3. Preview, package, install, and launch the dashboard.
+4. Choose your themes and enable the apps you want to see.
 
-| Theme | Animation and power |
-| --- | --- |
-| Itachi — Midnight Rain | Tracking Sharingan eyes, blinking, rain, occasional soft lightning, crows flying to the selected app |
-| Itachi — Crimson Moon | Static two-handed jutsu pose, tracking eyes, rotating background Sharingan, seven larger crows on selection and opening |
-| Naruto — Golden Hour | Closer portrait, tracking blue eyes, drifting sky and chakra sparks, Rasengan flying from his hand to the selected app on opening |
-| Hinata — Moonlit Byakugan | Tracking lavender eyes, gently moving lake surface and water glints, mist and fireflies, Twin Lion chakra pulse |
-| Sasuke — Violet Storm | Tracking Sharingan and Rinnegan eyes, storm glow, Chidori lightning toward the selected app |
-| Sakura — Blossom Sanctuary | Tracking green eyes, falling petals, healing chakra pulse toward the selected app |
-| Kurama — Nine-Tails Moon | Naruto faces the viewer; slowly deforming tails, smoke, embers, four tracking eyes, Nine-Tails chakra on app launch |
-| Naruto — Chakra Sync | Clear gold eyes, pulsing chakra glow, seven flame wisps, drifting sparks, moving water, golden Rasengan and arrival ring |
+Follow the [LG guide](docs/LG_WEBOS.md) for exact commands, troubleshooting, and the model-specific prompt. The experimental Home-button helper is a separate, optional step; replacing LG Home and starting after a cold boot are not guaranteed.
 
-Crimson Moon’s hands never rotate, scale, or change pose with selection. The complete jutsu artwork is one static image; crows supply the interaction. Original Artwork was removed from the picker; legacy selections migrate to Hinata.
+## Google TV: what you need to do
 
-Settings includes animation, eye blinking, 12-hour time, and background rotation every 1 minute or 30 seconds while the dashboard is visible. This update enables 1-minute rotation once; later choices are retained. Rotation waits while a panel is open. Disabling animations also pauses Hinata’s moon, foliage and lake animation and clears flying effects.
+1. Confirm your TV runs Google TV or Android TV and enable its developer/debugging options.
+2. Install Android Studio and SDK Platform Tools; pair the TV with ADB.
+3. Use the [Google TV prompt](docs/GOOGLE_TV.md#prompt-for-codex-or-claude-code) to build an Android port with native app launching and remote navigation.
+4. Build and sideload that APK, then test it on your exact model.
 
-## Soundtrack
+The webOS `.ipk` cannot be installed on Android. Default-Home support must be checked separately on each model.
 
-The user-provided **Naruto Beautiful Music Mix** is bundled as `app/assets/naruto-ambient.mp3` for offline playback. The complete 54:16 track repeats indefinitely. The original Downloads file remains unchanged; the bundled copy is stereo MP3 at 128 kbps with cover artwork removed. Playback pauses before app handover, while hidden, or when disabled, and resumes on return. Use the remote’s volume buttons to adjust listening volume. The player keeps a fixed, quiet app gain and has no separate volume setting.
-
-Settings contains seven everyday controls. Background rotation combines Off / 30 seconds / 1 minute into one row. Home is enabled automatically, with a note at the bottom left and a separate LG Home button beside Settings. No helper/test rows appear in Settings.
-
-## Keep dashboard visible
-
-Automatically enabled while the dashboard is visible. The app subscribes to `com.webos.service.tvpower/power/registerScreenSaverRequest` and declines Active requests using the TV's exact timestamp. It cancels that subscription before launching another app or LG Home, when hidden, on page exit, or when the setting is switched off. It reacquires on foreground return. No global screensaver timer, fake video, or remote input is used.
-
-This is an undocumented webOS mechanism also used by [Kodi](https://github.com/xbmc/xbmc/blob/master/xbmc/windowing/wayland/OSScreenSaverWebOS.cpp), so compatibility must be checked on other firmware. The standard browser Screen Wake Lock API was denied on this TV. On this TV, a real Active screensaver request was declined and webOS returned success after about 3 minutes idle. Actual idle-test results are in `verification/v0.6.3/`.
-
-## Limits
-
-- Developer Mode must remain enabled and its timer renewed before expiry.
-- A read-only Home-button observer attempts to return to the dashboard after briefly showing LG Home. Return from Netflix is currently unreliable: the user observed the dashboard appearing and then disappearing; this remains under investigation. It never grabs or forwards ordinary remote keys. Automatic startup after cold boot is not established. See [Home helper](home-helper/README.md).
-- `app/catalog.js` is an installed-app inventory snapshot. Availability of known entries is checked on launch. Newly installed apps need a refreshed catalog from this computer. System shortcuts can be restricted by firmware.
-- The one-time local inventory helper requested READ_INSTALLED_APPS and did not retain its remote client key. No credentials belong in this project.
-
-## Develop and install
-
-Requires Node.js and the official `@webos-tools/cli` npm package. Device pairing is stored outside the repository by the CLI.
+## Preview on your computer
 
 ```sh
-node --check app/app.js
-node home-helper/test-screensaver.cjs
-node home-helper/test-kurama-scenes.cjs
-ZIG=/path/to/zig-0.14.1/zig node home-helper/build.mjs
-npm exec --yes --package=@webos-tools/cli -- ares-install -d lg-tv dist/home-helper/com.dextor.sharingan_0.9.2_all.ipk
-npm exec --yes --package=@webos-tools/cli -- ares-install -d lg-tv dist/home-helper/com.mbs.communityhomehelper_0.4.0_arm.ipk
-npm exec --yes --package=@webos-tools/cli -- ares-launch -d lg-tv com.dextor.sharingan
+git clone https://github.com/Code-Crash/sharingan-theme-app.git
+cd sharingan-theme-app
+python3 -m http.server 8765 --bind 127.0.0.1
 ```
 
-Preview with `python3 -m http.server 8765 --bind 127.0.0.1`, then open `http://127.0.0.1:8765/preview.html`. The preview frames the dashboard at 16:9 and has buttons for the two new themes. Direct review links use `preview.html?theme=kurama` and `preview.html?theme=chakra`. Arrow keys select apps; Enter previews the character power and shows a local-only launch notice. No TV connection is made from the browser preview.
+Open [the local preview](http://127.0.0.1:8765/preview.html). Click inside the dashboard, then use **Left/Right** and **Enter**. App launches are simulated in the browser.
 
-The new scenes use a WebGL texture mesh at a maximum of 15 fps and 1280×720 on this TV, with protected face regions. The indexed mesh uses 1,372 unique vertices and precomputed tail weights; both scenes use a single texture lookup per pixel; glow weights are computed once and the glow pulse is calculated once per frame. If WebGL is unavailable, localized SVG displacement animates the tails and water. Only the visible, selected scene animates. Hidden pages and Animations Off stop the mesh, SVG timelines, and CSS effects. Inactive themes pause their CSS animation. Hinata uses cached, cropped scenery layers instead of live SVG turbulence/displacement; seven flame wisps use individual composited elements. The original static image remains available if the renderer cannot initialize.
+## Features
 
-Version 0.9.2 includes moving scenery in every theme. Original character scenes have slowly drifting cloud banks masked to the background; Naruto also has moving sun rays, Hinata has a slowly rotating lunar surface, gently windblown foliage, water and mist, Sasuke has rolling storm layers and lightning, and Sakura has windblown petals and drifting blossom light. Crimson Moon retains its rotating Sharingan. Motion pauses when hidden or switched off. See the latest verification report for deployment status.
+- Eight themes: Itachi Rain, Itachi Crimson Moon, Naruto Golden Hour, Hinata, Sasuke, Sakura, Kurama, and Naruto Chakra Sync.
+- Eye tracking, blinking, animated backgrounds, and character effects toward the selected app.
+- App checkboxes, saved preferences, and background rotation every 30 or 60 seconds.
+- Optional looping local music; volume follows the TV remote.
 
-## Artwork and implementation
+On LG: **Left/Right** selects an app, **OK** opens it, **Down** reaches Themes/Settings, and **Back** closes panels. Default apps are YouTube, Netflix, Prime Video, JioHotstar, and Crunchyroll; availability depends on your TV and region.
 
-Final bitmap assets in `app/assets/`: `itachi-rain.png`, `itachi-jutsu.png`, `red-background.png`, `naruto-eyes-base.png`, `hinata-moon.png`, `sasuke-storm.png`, and `sakura-blossom.png`, `kurama-moon.png`, and `chakra-sync.png`.
+## Develop and share
 
-These are built-in imagegen outputs. Prompts are in `artwork-prompt.txt`, `themes-artwork-prompts.txt`, `artwork-v0.5-prompts.txt`, and `artwork-v0.9-prompts.txt`. Superseded cutouts are retained in `references/`. SVG eyes and effects are code assets. Apple TV, Crunchyroll, Jellyfin, and AirPlay icons use Simple Icons (CC0); the license is in `app/assets/simple-icons-LICENSE.md`.
+- [Development, customization, and verification](docs/DEVELOPMENT.md)
+- [Experimental LG Home helper](home-helper/README.md)
+- [Before publishing a public fork or release](docs/PUBLIC_RELEASE.md)
 
-`mountEyes` contains measured eye apertures and iris positions. Tracking maps icon coordinates into each eye SVG’s actual transformed bounds, including Naruto’s closer framing. Hands are never articulated in the final version. Hinata’s water effect is clipped to the lake; the face and landscape remain undistorted.
+Current dashboard version: **0.9.2**. [On-TV verification and performance results](verification/v0.9.2/REVIEW.md).
 
-## Verification
-
-`review-tv.mjs` runs the current deep TV review, restoring saved preferences afterward. It checks navigation, nested panels, app toggles, the expanded app row, eight themes, eyes, static Itachi artwork, crows, water, powers, compact Settings, offline looping music, background motion in all themes, and screensaver registration. Current results are in `verification/v0.9.2/`; older folders document historical builds. Physical remote behavior is validated separately.
-
-The historical `review-v0.5.mjs` connects to the app inspector URL printed by `ares-inspect` and checks six themes, eye tracking, five-app defaults, static hands, crow count and size, water timing, reduced motion, power animations, Rasengan sequencing, and gallery layout. Actual-TV screenshots and machine-readable results are in `verification/v0.5/`. Older artifacts document previous versions.
-
-TV performance verification for 0.9.2 is in [verification/v0.9.2/REVIEW.md](verification/v0.9.2/REVIEW.md), including before/after callback timing samples and the passing full TV review.
+Source licensing and bundled-media redistribution rights still need to be resolved before a public release; see the publication notes above. This project is not affiliated with LG, Google, Sony, or the Naruto rights holders.

@@ -44,11 +44,13 @@ npm exec --yes --package=@webos-tools/cli -- ares-install -d lg-tv --remove com.
 
 ## Build and update
 
+For a normal dashboard-only installation, start with the [LG setup guide](../docs/LG_WEBOS.md). The commands below build the experimental personal-device helper.
+
 Requires Zig 0.14.1, Node, Python 3 and the official webOS CLI. Numeric identities in options.json are verified for this TV only. No root, system-user changes, firmware patch or Home Assistant account is used.
 
 ```sh
 ZIG=/path/to/zig node home-helper/build.mjs
-npm exec --yes --package=@webos-tools/cli -- ares-install -d lg-tv dist/home-helper/com.dextor.sharingan_0.8.1_all.ipk
+npm exec --yes --package=@webos-tools/cli -- ares-install -d lg-tv dist/home-helper/com.dextor.sharingan_0.9.2_all.ipk
 npm exec --yes --package=@webos-tools/cli -- ares-install -d lg-tv dist/home-helper/com.mbs.communityhomehelper_0.4.0_arm.ipk
 ```
 
